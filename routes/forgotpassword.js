@@ -20,21 +20,23 @@ router.get('/', function(req, res, next) {
 router.post('/',(req,res,next)=>{
     var email = req.body.email;
     var newpassword = req.body.newpassword;
-    var againnewpassword = req.body.againnewpassword;
-    if(newpassword === againnewpassword){
-        var sql = 'UPDATE logintable SET password=? WHERE email=?';
-        con.query(sql,[newpassword,email],(err,result)=>{
-            if(err) return console.log(err);
-            else {
-                res.redirect('/login');
-            }
-        });
-    }
-    else{
-        res.render('forgotpassword',{
-            message: "Wrong Attempt....Try again..."
-        });
-    }
+    var sqlforemail = 'SELECT email FROM logintable WHERE email=?';
+    con.query(sqlforemail,[email],(err,result)=>{
+        if (result[0] !== undefined){
+            var sql = 'UPDATE logintable SET password=? WHERE email=?';
+            con.query(sql,[newpassword,email],(err,result)=>{
+                if(err) return console.log(err);
+                else {
+                        res.redirect('/login');
+                }
+            });
+        }
+        else{
+            res.render('forgotpassword',{
+                message:'There is no user registered with this email!!!....Try Again!!!'
+            });
+        }
+    });
 });
 
 module.exports = router;
