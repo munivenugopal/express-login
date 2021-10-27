@@ -26,7 +26,7 @@ router.post('/',(req,res)=>{
     console.log(result);
     if (result[0] !== undefined){
         console.log("The Eneterd Email is Already Registered!!");
-        return res.render('register.jade',{
+        return res.render('register.ejs',{
           message : 'The email is already in use'
         }); 
     }
