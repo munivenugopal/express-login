@@ -35,6 +35,7 @@ html(lang="en")
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/stylesheets/register.css">
     <title>login</title>
   </head>
   <body> 
@@ -48,11 +49,13 @@ html(lang="en")
         <label for="password">Password </label>
         <input type="password" id="password" name="password" required>
       </div>
+      <div>
+        <a href="/forgotpassword">forgot password</a>
+      </div>
       <button type="submit">Login</button>
       <% if(message){ %>
       <h3><%=message %></h3>
       <% } %>
-      <a href="/forgotpassword">forgot password</a>
     </form>
     <p>New User? go to Register </p>
     <a href="/register"><button type="button">Register</button></a>
