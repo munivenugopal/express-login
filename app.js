@@ -5,15 +5,14 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mysql = require('mysql');
 
-var homeRouter = require('./routes/home');
-var registerRouter = require('./routes/register');
-var loginRouter = require('./routes/login');
-var forgotPasswordRouter = require('./routes/forgotpassword');
-var welcomeRouter = require('./routes/welcome');
+var indexRouter = require('./routes/index');
+var editRouter = require('./routes/edit');
+var deleteRouter = require('./routes/delete');
+var addRouter = require('./routes/add');
+var viewRouter = require('./routes/view');
 
 var app = express();
 
-//connecton to database
 const con = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -36,11 +35,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', homeRouter);
-app.use('/register', registerRouter);
-app.use('/login', loginRouter);
-app.use('/forgotpassword',forgotPasswordRouter);
-app.use('/welcome', welcomeRouter);
+app.use('/', indexRouter);
+app.use('/edit',editRouter);
+app.use('/delete',deleteRouter);
+app.use('/add',addRouter);
+app.use('/view',viewRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -55,6 +54,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
+  res.render('error');
 });
 
 app.listen(3000,(err)=>{

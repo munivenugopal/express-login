@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
+    <title>Edit</title>
+</head>
+<body>
+    <h2>Enter the Details of the Selected Product</h2>
+    <form action="/edit" method="post">
+        <div>
+            <div>
+                <label for="ProductName">ProductName</label>
+            </div>
+            <div>
+                <input type="text" id="ProductName" name="ProductName" required>
+            </div>
+        </div>
+        <div>
+            <div>
+                <label for="SupplierID">SupplierID</label>
+            </div>
+            <div>
+                <input type="text" id="SupplierID" name="SupplierID" required>
+            </div>
+        </div>
+        <div>
+            <div>
+                <label for="CategoryID">CategoryID</label>
+            </div>
+            <div>
+                <input type="text" id="CategoryID" name="CategoryID" required>
+            </div>
+        </div>
+        <div>
+            <div>
+                <label for="Unit">Unit</label>
+            </div>
+            <div>
+                <input type="text" id="Unit" name="Unit" required>
+            </div>
+        </div>
+        <div>
+            <div>
+                <label for="Price">Price</label>
+            </div>
+            <div>
+                <input type="text" id="Price" name="Price" required>
+            </div>
+        </div>
+        <div class="error"><p></p></div>
+        <button class="validate" type="button">Validate</button>
+        <button class="submit" type="submit">Confirm Edit</button>
+        <a href="/"><button type="button">Cancel</button></a>
+    </form>
+
+<script type="text/javascript">
+    $('.submit').hide();
+    $('.validate').click('button',function(){
+        var supplierid = $("input[name = 'SupplierID']").val();
+        var categoryid = $("input[name = 'CategoryID']").val();
+        var unit = $("input[name = 'Unit']").val();
+        var price = $("input[name = Price]").val();
+        if (supplierid%1 !== 0 || categoryid%1 !== 0 || unit%1 !==0 || price%1 !== 0){
+            $('.error p').text("Please Enter Valid Numbers in Number Fields").css("color","red");
+        }
+        else{
+            $('.error p').text("");
+            $('.submit').show();
+            $('.validate').hide();
+        }
+    })
+</script>
+</body>
+</html>
