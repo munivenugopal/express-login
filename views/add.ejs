@@ -20,22 +20,6 @@
         </div>
         <div>
             <div>
-                <label for="SupplierID">SupplierID</label>
-            </div>
-            <div>
-                <input type="text" id="SupplierID" name="SupplierID" required>
-            </div>
-        </div>
-        <div>
-            <div>
-                <label for="CategoryID">CategoryID</label>
-            </div>
-            <div>
-                <input type="text" id="CategoryID" name="CategoryID" required>
-            </div>
-        </div>
-        <div>
-            <div>
                 <label for="Unit">Unit</label>
             </div>
             <div>
@@ -59,12 +43,9 @@
 <script type="text/javascript">
     $('.submit').hide();
     $('.validate').click('button',function(){
-        var supplierid = $("input[name = 'SupplierID']").val();
-        var categoryid = $("input[name = 'CategoryID']").val();
-        var unit = $("input[name = 'Unit']").val();
         var price = $("input[name = Price]").val();
-        if (supplierid%1 !== 0 || categoryid%1 !== 0 || unit%1 !==0 || price%1 !== 0){
-            $('.error p').text("Please Enter Valid Numbers in Number Fields").css("color","red");
+        if ( price%1 !== 0){
+            $('.error p').text("Please Enter Valid Numbers in Price Field").css("color","red");
         }
         else{
             $('.error p').text("");

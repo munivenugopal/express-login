@@ -10,20 +10,27 @@ const con = mysql.createConnection({
 });
 var productid=0;
 
-/* GET home page. */
+
 router.get('/', function(req, res, next) {
-    res.render('edit')
+    //res.render('edit')
     productid = req.query.productid;
+    var sql = 'SELECT * FROM products WHERE ProductID = ?';
+    con.query(sql,[productid],(err,result)=>{
+        if(err) return console.log(err);
+        else{
+            res.render('edit',{
+                data: result
+            });
+        }
+    });
 });
 
 router.post('/',(req,res)=>{
     var productname = req.body.ProductName;
-    var supplierid = req.body.SupplierID;
-    var categoryid = req.body.CategoryID;
     var unit = req.body.Unit;
     var price = req.body.Price;
-    var sql = 'UPDATE products SET ProductName = ? ,SupplierID = ? , CategoryID = ? , Unit = ? , Price = ? WHERE ProductID = ?';
-    con.query(sql,[productname,supplierid,categoryid,unit,price,productid],(err,result)=>{
+    var sql = 'UPDATE products SET ProductName = ? , Unit = ? , Price = ? WHERE ProductID = ?';
+    con.query(sql,[productname,unit,price,productid],(err,result)=>{
         if(err) return console.log(err);
         else {
             con.query('SELECT * FROM products',(err,result)=>{
