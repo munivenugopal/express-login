@@ -5,11 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mysql = require('mysql');
 
-var indexRouter = require('./routes/index');
-var editRouter = require('./routes/edit');
-var deleteRouter = require('./routes/delete');
-var addRouter = require('./routes/add');
-var viewRouter = require('./routes/view');
+var productRouter = require('./routes/products');
 
 var app = express();
 
@@ -35,11 +31,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/edit',editRouter);
-app.use('/delete',deleteRouter);
-app.use('/add',addRouter);
-app.use('/view',viewRouter);
+app.use('/products', productRouter);
+//app.use('/edit',editRouter);
+//app.use('/delete',deleteRouter);
+//app.use('/add',addRouter);
+//app.use('/view',viewRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -50,7 +46,9 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
+  console.log(res.locals.message);
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+  console.log(res.locals.error);
 
   // render the error page
   res.status(err.status || 500);

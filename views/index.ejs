@@ -8,8 +8,8 @@
   <title>Products</title>
 </head>
 <body>
-  <h1>Products Available</h1>
-  <a href="/add"><button type="button">Add New Product</button></a>
+  <a href="/products"><h1>Products Available</h1></a>
+  <a href="/products/add"><button type="button">Add New Product</button></a>
   <table>
     <tr>
       <th>ProductID</th>
@@ -24,7 +24,9 @@
       <td><%= data[i]['ProductName'] %></td>
       <td><%= data[i]['Unit'] %></td>
       <td><%= data[i]['Price'] %></td>
-      <td><a href="/edit?productid=<%=data[i]['ProductID']%>"><button type="button">Edit</button></a><a href="/delete?productid=<%=data[i]['ProductID']%>"><button class="delete" type="button">Delete</button></a><a href="/view?productid=<%=data[i]['ProductID']%>"><button type="button">View</button></a></td>
+      <td><a href="/products/edit?productid=<%=data[i]['ProductID']%>"><button type="button">Edit</button></a>
+          <a class="delproduct" href="/products/delete?productid=<%=data[i]['ProductID']%>"><button class="delete" type="button">Delete</button></a>
+          <a href="/products/view?productid=<%=data[i]['ProductID']%>"><button type="button">View</button></a></td>
     </tr>
    <% } %>
   </table>
@@ -36,11 +38,9 @@
 
     }
     else{
-      
+      $(".delproduct").attr("href"," ");
     }
-
-
-  })
+  });
 </script>
 </body>
 </html>
