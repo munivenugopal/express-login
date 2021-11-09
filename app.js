@@ -6,6 +6,7 @@ var logger = require('morgan');
 var mysql = require('mysql');
 
 var productRouter = require('./routes/products');
+var sellerRouter = require('./routes/sellers');
 
 var app = express();
 
@@ -32,6 +33,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/products', productRouter);
+app.use('/sellers', sellerRouter);
 //app.use('/edit',editRouter);
 //app.use('/delete',deleteRouter);
 //app.use('/add',addRouter);
@@ -56,8 +58,8 @@ app.use(function(err, req, res, next) {
 });
 
 app.listen(3000,(err)=>{
-  if (err) return console.log(err)
-  else return console.log("Express is Running on Port number 3000")
+  if(err) return console.log('error while listening to port 3000'+err);
+  else return console.log("Express is Running on Port number 3000");
 })
 
 module.exports = app;

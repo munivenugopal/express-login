@@ -110,8 +110,11 @@ router.get('/view',(req,res)=>{
   con.query(sql,[productid],(err,result)=>{
       if(err) return console.log(err);
       else{
-          res.render('view',{
-              data: result
+          con.query('SELECT seller_name FROM sellers WHERE productid = ?',[productid],(err,sellerslist)=>{
+            res.render('view',{
+                data: result,
+                sellerslist: sellerslist
+            });
           });
       }
   })

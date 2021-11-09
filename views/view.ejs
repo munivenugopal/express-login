@@ -11,6 +11,10 @@
     <h3>ProductID: <%= data[0]['ProductID'] %></h3>
     <h3>Quantity Available: <%= data[0]['Unit'] %></h3>
     <h3>Price of Each Quantity: <%= data[0]['Price'] %></h3>
+    <h3>Available Sellers:</h3>
+    <% for(var i = 0;i < sellerslist.length; i++){ %>
+    <h4><%= sellerslist[i]['seller_name'] %></h4>
+    <% } %>
     <a href="/products"><button type="button">Products</button></a>
 </body>
 </html>

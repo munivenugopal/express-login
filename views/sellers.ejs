@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="stylesheets/tables.css">
+    <title>Sellers</title>
+</head>
+<body>
+    <h1>Sellers</h1>
+    <button id="flip" type="button">Click to see available products</button>
+    <div id="panel" style="display: none;text-decoration: none !important">
+        <% for(var i=0; i<productsdata.length; i++){ %>
+	    <div><a href="/sellers/viewproduct?productid=<%= productsdata[i]['ProductID'] %>" ><%= productsdata[i]['ProductName'] %></a></div>
+        <% } %>
+    </div>
+    <div><a href="/sellers/add"><button type="button">Add new Seller</button></a></div>
+    <table>
+        <tr>
+            <th>sellerid</th>
+            <th>seller_name</th>
+            <th>productid</th>
+            <th>Actions</th>
+        </tr>
+        <% for(var i=0; i<data.length; i++){ %>
+        <tr>
+            <td><%= data[i]['sellerid'] %></td>
+            <td><%= data[i]['seller_name'] %></td>
+            <td><%= data[i]['productid']%></td>
+            <td>
+                <a href="/sellers/editseller?sellerid=<%=data[i]['sellerid'] %>"><button type="button">Edit</button></a>
+                <a class="delseller" href="/sellers/deleteseller?sellerid=<%=data[i]['sellerid'] %>"><button type="button" class="delete">Delete</button></a>
+                <a href="/sellers/viewseller?sellerid=<%=data[i]['sellerid'] %>"><button type="button">View</button></a>
+            </td>
+        </tr>
+        <% } %>
+    </table>
+    <script>
+        $('.delete').click('button',function(){
+            var decision = confirm("Are yo sure to Delete this Seller from the Database");
+            if(decision){
+
+            }
+            else{
+                $('.delseller').attr('href','/sellers ');
+            }
+        });
+
+        $('#flip').click('button',function(){
+            $('#panel').slideToggle('slow');
+        });
+    </script>
+</body>
+</html>

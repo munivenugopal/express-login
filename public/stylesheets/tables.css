@@ -1,0 +1,15 @@
+th{
+    padding: 10px;
+    color: aliceblue;
+    background-color: dimgray;
+    text-align: center;
+};
+
+td{
+    padding: 10px;
+    text-align: center;
+};
+
+a,u{
+    text-decoration: none !important;
+};

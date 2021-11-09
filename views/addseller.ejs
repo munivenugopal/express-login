@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add new seller</title>
+</head>
+<body>
+    <h1>Add New Seller here!</h1>
+    <form action="/sellers/add" method="post">
+        <div>
+            <div>
+                <label for="SellerName">Seller Name</label>
+            </div>
+            <div>
+                <input type="text" id="SellerName" name="SellerName" required>
+            </div>
+        </div>
+        <div>
+            <div>
+                <label for="ProductID">Product ID</label>
+            </div>
+            <div>
+                <input type="text" id="ProductID" name="ProductID" required>
+            </div>
+        </div>
+        <p><%=message %></p>
+        <button type="submit">Add to Sellers Table</button>
+        <a href="/sellers"><button type="button"> Cancel </button></a>
+    </form>
+</body>
+</html>

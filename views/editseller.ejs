@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Seller</title>
+</head>
+<body>
+    <h2>Enter the details of the selected seller</h2>
+    <form action="/sellers/editseller" method="post">
+        <div>
+            <div>
+                <label for="SellerName">Seller Name</label>
+            </div>
+            <div>
+                <input type="text" id="SellerName" name="SellerName" required value="<%= data[0]['seller_name'] %>">
+            </div>
+        </div>
+        <div>
+            <div>
+                <label for="ProductID">ProductID</label>
+            </div>
+            <div>
+                <input type="text" id="ProductID" name="ProductID" required value="<%= data[0]['productid'] %>">
+            </div>
+        </div>
+        <p><%= warning %></p>
+        <button type="submit" >Confirm Edit</button>
+        <a href="/sellers"><button type="button">Cancel</button></a>
+    </form>
+</body>
+</html>
