@@ -7,6 +7,7 @@ var mysql = require('mysql');
 
 var productRouter = require('./routes/products');
 var sellerRouter = require('./routes/sellers');
+var categoryRouter = require('./routes/categories');
 
 var app = express();
 
@@ -34,6 +35,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/products', productRouter);
 app.use('/sellers', sellerRouter);
+app.use('/categories',categoryRouter);
+app.get('/',(req,res)=>{
+  res.render('home');
+});
 //app.use('/edit',editRouter);
 //app.use('/delete',deleteRouter);
 //app.use('/add',addRouter);

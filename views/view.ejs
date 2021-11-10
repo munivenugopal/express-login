@@ -4,17 +4,33 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>Product Details</title>
 </head>
 <body>
-    <h1><%= data[0]['ProductName'] %></h1>
+    <h1><%= data[0]['ProductName'] %></h1><br><br>
     <h3>ProductID: <%= data[0]['ProductID'] %></h3>
     <h3>Quantity Available: <%= data[0]['Unit'] %></h3>
     <h3>Price of Each Quantity: <%= data[0]['Price'] %></h3>
+    <h3>Category: <%= categoryname[0]['name'] %></h3>
     <h3>Available Sellers:</h3>
     <% for(var i = 0;i < sellerslist.length; i++){ %>
-    <h4><%= sellerslist[i]['seller_name'] %></h4>
+    <p><%= sellerslist[i]['seller_name'] %></p>
     <% } %>
-    <a href="/products"><button type="button">Products</button></a>
+    <p class="text"></p>
+    <a href="/products"><button type="button">Products</button></a><br>
+    <a href="/sellers"><br><button class="sellers" type="button">Sellers</button></a>
+<script>
+    $('.sellers').hide();
+    var sellers = $('.p').value;
+    if(sellers === undefined){
+        $('.text').text('No Sellers are Available for this Product....Try adding sellers in sellers page').css('color','red');
+        console.log('No Sellers are Available fopr this Product!!');
+        $('.sellers').show();
+    }
+    else{
+        console.log('Available sellers is not empty:'+sellers);
+    }
+</script>
 </body>
 </html>

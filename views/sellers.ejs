@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="stylesheets/tables.css">
+    <link rel="stylesheet" href="/stylesheets/tables.css">
     <title>Sellers</title>
 </head>
 <body>
@@ -21,14 +21,14 @@
         <tr>
             <th>sellerid</th>
             <th>seller_name</th>
-            <th>productid</th>
+            <th>ProductName</th>
             <th>Actions</th>
         </tr>
         <% for(var i=0; i<data.length; i++){ %>
         <tr>
             <td><%= data[i]['sellerid'] %></td>
             <td><%= data[i]['seller_name'] %></td>
-            <td><%= data[i]['productid']%></td>
+            <td><%= data[i]['ProductName']%></td>
             <td>
                 <a href="/sellers/editseller?sellerid=<%=data[i]['sellerid'] %>"><button type="button">Edit</button></a>
                 <a class="delseller" href="/sellers/deleteseller?sellerid=<%=data[i]['sellerid'] %>"><button type="button" class="delete">Delete</button></a>
@@ -37,6 +37,8 @@
         </tr>
         <% } %>
     </table>
+    <br>
+    <a href="/"><button>Home</button></a>
     <script>
         $('.delete').click('button',function(){
             var decision = confirm("Are yo sure to Delete this Seller from the Database");

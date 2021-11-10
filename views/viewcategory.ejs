@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>View Category</title>
+</head>
+<body>
+    <h2><%= category_name[0]['name'] %></h2>
+    <% for(var i = 0;i < data.length ; i++){ %>
+    <p><%= data[i]['ProductName'] %></p>
+    <% } %>
+    <h4 class="text"></h4>
+    <a href="/products"><button class="products">Products</button></a>
+    <a href="/categories"><button>Categories</button></a>
+
+    <script>
+        $('.products').hide();
+        var message = $('.p').value;
+        console.log(message);
+        if(message === undefined){
+            $('.text').text('Looks like You didn`t add any Product into this category yet.... ').css('color','red');
+            $('.products').show();
+        }
+    </script>
+</body>
+</html>

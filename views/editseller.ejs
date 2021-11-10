@@ -18,12 +18,14 @@
             </div>
         </div>
         <div>
-            <div>
-                <label for="ProductID">ProductID</label>
-            </div>
-            <div>
-                <input type="text" id="ProductID" name="ProductID" required value="<%= data[0]['productid'] %>">
-            </div>
+            <label for="products">Choose a product:</label>
+            <select name="product" id="product">
+                <option value="select a product">--Select--</option>
+                <% for(var i = 0; i < productslist.length ; i++){ %>
+                <option value="<%= productslist[i]['ProductName'] %>"><%= productslist[i]['ProductName'] %></option>
+                <%}%>
+            </select>
+            <br><br>
         </div>
         <p><%= warning %></p>
         <button type="submit" >Confirm Edit</button>

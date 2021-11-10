@@ -34,6 +34,15 @@
                 <input type="text" id="Price" name="Price" required>
             </div>
         </div>
+        <div>
+           <label for="selectedCategory">Choose a category:</label><br>
+            <select name="selectedCategory" id="selectedCategory">
+                <option value="select a category">--Select--</option>
+                <% for(var i = 0; i < categorylist.length ; i++){ %>
+                <option value="<%= categorylist[i]['name'] %>"><%= categorylist[i]['name'] %></option>
+                <% } %>
+            </select>
+        </div>
         <div class="error"><p></p></div>
         <button class="validate" type="button">Validate</button>
         <button class="submit" type="submit">Add to Table</button>

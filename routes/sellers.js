@@ -11,7 +11,7 @@ const con = mysql.createConnection({
 
 // GET sellers page.
 router.get('/',(req,res)=>{
-    con.query('SELECT * FROM sellers',(err,result)=>{
+    con.query('SELECT s.sellerid , s.seller_name , p.ProductName FROM sellers AS s LEFT JOIN products AS p ON s.productid = p.ProductID ORDER BY s.sellerid',(err,result)=>{
         if(err) return console.log(err);
         else {
             con.query('SELECT ProductID,ProductName FROM products',(err,productresult)=>{
@@ -27,32 +27,44 @@ router.get('/',(req,res)=>{
 //add new seller 
 
 router.get('/add',(req,res)=>{
-    res.render('addseller',{
-        message:' '
+    con.query('SELECT ProductName FROM products',(err,productslist)=>{
+        res.render('addseller',{
+            message:' ',
+            productslist: productslist
+        });
     });
 });
 
+var productid;
 router.post('/add',(req,res)=>{
+    
     var sellername = req.body.SellerName;
-    var productid = req.body.ProductID;
-    var sql = 'INSERT INTO sellers (seller_name,productid) VALUES(?,?)';
-    con.query(sql,[sellername,productid],(err,result)=>{
-        if(err) {
-            console.log('Error while inserting alien product id"s'+err);
-            res.render('addseller',{
-                message: "Entered Product ID is not a valid ID, Check Products Page for ProductID's."
-            });
-        } 
-        else{
-            con.query('SELECT * FROM sellers',(err,result)=>{
-                if(err) return console.log(err);
-                else{
-                    res.render('sellers',{
-                        data: result
+    var selectedProduct = req.body.product;
+
+    console.log(selectedProduct);
+    
+    con.query('SELECT ProductID FROM products WHERE ProductName = ?',[selectedProduct],(err,result)=>{
+        productid = result[0]['ProductID'];
+        console.log(productid);
+        var sql = 'INSERT INTO sellers (seller_name,productid) VALUES(?,?)';
+        con.query(sql,[sellername,productid],(err,result)=>{
+            if(err) {
+                console.log('Error while inserting alien product id"s'+err);
+                res.render('addseller',{
+                    message: "Entered Product ID is not a valid ID, Check Products Page for ProductID's."
+                });
+            } 
+            else {
+                con.query('SELECT ProductID,ProductName FROM products',(err,productresult)=>{
+                    con.query('SELECT s.sellerid , s.seller_name , p.ProductName FROM sellers AS s LEFT JOIN products AS p ON s.productid = p.ProductID ORDER BY s.sellerid',(err,sellerstable)=>{
+                        res.render('sellers',{
+                            data: sellerstable,
+                            productsdata: productresult
+                        });
                     });
-                }
-            });
-        }
+                });
+            }
+        });
     });
 });
 
@@ -66,9 +78,12 @@ router.get('/editseller',(req,res)=>{
     con.query(sql,[editsellerid],(err,result)=>{
         if(err) return console.log(err);
         else{
-            res.render('editseller',{
-                data: result,
-                warning: ' '
+            con.query('SELECT ProductName FROM products',(err,productslist)=>{
+                res.render('editseller',{
+                    data: result,
+                    warning: ' ',
+                    productslist: productslist
+                });
             });
         }
     });
@@ -76,33 +91,37 @@ router.get('/editseller',(req,res)=>{
 
 router.post('/editseller',(req,res)=>{
     var sellername = req.body.SellerName;
-    var productid = req.body.ProductID;
-    var sql = 'UPDATE sellers SET seller_name = ?, productid = ? WHERE sellerid = ? ';
-    con.query(sql,[sellername,productid,editsellerid],(err,result)=>{
-        if(err){
-            console.log('Error while entering alien product id"s'+err);
-            var sql = 'SELECT * FROM sellers WHERE sellerid = ?';
-            con.query(sql,[editsellerid],(err,result)=>{
-                if(err) return console.log(err);
-                else{
-                    res.render('editseller',{
-                        data: result,
-                        warning: 'Entered Product ID is not a valid ID, Check Products Page for ProductID`s. '
+    var selectedProduct = req.body.product;
+
+    con.query('SELECT ProductID FROM products WHERE ProductName = ?',[selectedProduct],(err,result)=>{
+        productid = result[0]['ProductID'];
+        var sql = 'UPDATE sellers SET seller_name = ?, productid = ? WHERE sellerid = ? ';
+        con.query(sql,[sellername,productid,editsellerid],(err,result)=>{
+            if(err){
+                console.log('Error while entering alien product id"s'+err);
+                var sql = 'SELECT * FROM sellers WHERE sellerid = ?';
+                con.query(sql,[editsellerid],(err,result)=>{
+                    if(err) return console.log(err);
+                    else{
+                        res.render('editseller',{
+                            data: result,
+                            warning: 'Entered Product ID is not a valid ID, Check Products Page for ProductID`s. '
+                        });
+                    }
+                });
+            }
+            else {
+                con.query('SELECT ProductID,ProductName FROM products',(err,productresult)=>{
+                    con.query('SELECT s.sellerid , s.seller_name , p.ProductName FROM sellers AS s LEFT JOIN products AS p ON s.productid = p.ProductID ORDER BY s.sellerid',(err,sellerstable)=>{
+                        res.render('sellers',{
+                            data: sellerstable,
+                            productsdata: productresult
+                        });
                     });
-                }
-            });
-        }
-        else{
-            con.query('SELECT * FROM sellers',(err,result)=>{
-                if(err) return console.log(err);
-                else{
-                    res.render('sellers',{
-                        data: result
-                    });
-                }
-            });
-        }
-    });
+                });
+            }
+        });
+    })
 });
 
 //Delete Seller
@@ -111,14 +130,14 @@ router.get('/deleteseller',(req,res)=>{
     var sellerid = req.query.sellerid;
     con.query('DELETE FROM sellers WHERE sellerid = ?',[sellerid],(err,result)=>{
         if(err) return console.log(err);
-        else{
-            con.query('SELECT * FROM sellers',(err,result)=>{
-                if(err) return console.log(err);
-                else{
+        else {
+            con.query('SELECT ProductID,ProductName FROM products',(err,productresult)=>{
+                con.query('SELECT s.sellerid , s.seller_name , p.ProductName FROM sellers AS s LEFT JOIN products AS p ON s.productid = p.ProductID ORDER BY s.sellerid',(err,sellerstable)=>{
                     res.render('sellers',{
-                        data: result
+                        data: sellerstable,
+                        productsdata: productresult
                     });
-                }
+                });
             });
         }
     });
@@ -128,12 +147,15 @@ router.get('/deleteseller',(req,res)=>{
 
 router.get('/viewseller',(req,res)=>{
     var sellerid = req.query.sellerid;
-    var sql = 'SELECT * FROM sellers WHERE sellerid = ?';
+    var sql = 'select ProductName from products where ProductID = (select productid from sellers where sellerid = ?)';
     con.query(sql,[sellerid],(err,result)=>{
         if(err) return console.log(err);
         else{
-            res.render('viewseller',{
-                data: result
+            con.query('select seller_name from sellers where sellerid = ?',[sellerid],(err,sellername)=>{
+                res.render('viewseller',{
+                    data: result,
+                    sellername: sellername
+                });
             });
         }
     });
