@@ -15,21 +15,26 @@
     <h3>Category: <%= categoryname[0]['name'] %></h3>
     <h3>Available Sellers:</h3>
     <% for(var i = 0;i < sellerslist.length; i++){ %>
-    <p><%= sellerslist[i]['seller_name'] %></p>
+    <h4><%= sellerslist[i]['seller_name'] %></h4>
     <% } %>
     <p class="text"></p>
     <a href="/products"><button type="button">Products</button></a><br>
     <a href="/sellers"><br><button class="sellers" type="button">Sellers</button></a>
 <script>
     $('.sellers').hide();
-    var sellers = $('.p').value;
-    if(sellers === undefined){
+    var sellers = $('h4').text();
+    if(!sellers){
+        $('.text').text('No Sellers are Available for this Product....Try adding sellers in sellers page').css('color','red');
+        console.log('No Sellers are Available fopr this Product!!');
+        $('.sellers').show();
+    }
+    else if (sellers === undefined) {
         $('.text').text('No Sellers are Available for this Product....Try adding sellers in sellers page').css('color','red');
         console.log('No Sellers are Available fopr this Product!!');
         $('.sellers').show();
     }
     else{
-        console.log('Available sellers is not empty:'+sellers);
+        console.log('Available sellers is not empty:'+sellers+'this');
     }
 </script>
 </body>

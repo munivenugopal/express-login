@@ -18,11 +18,17 @@
 
     <script>
         $('.products').hide();
-        var message = $('.p').value;
-        console.log(message);
+        var message = $('p').text();
         if(message === undefined){
             $('.text').text('Looks like You didn`t add any Product into this category yet.... ').css('color','red');
             $('.products').show();
+        }
+        else if(!message){
+            $('.text').text('Looks like You didn`t add any Product into this category yet.... ').css('color','red');
+            $('.products').show();
+        }
+        else{
+            console.log('Avalable Products is not Empty'+message);
         }
     </script>
 </body>
