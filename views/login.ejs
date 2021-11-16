@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/stylesheets/register.css">
+    <title>login</title>
+  </head>
+  <body> 
+    <h1>Login Form</h1>
+    <form action="/user/login" method="POST">
+      <div>
+        <label for="email">Email</label><br>
+        <input type="email" id="email" name="email" required><br>
+        <label for="password">Password </label><br>
+        <input type="password" id="password" name="password" required><br>
+      </div>
+      <div>
+        <a href="/user/forgotpassword">forgot password</a>
+      </div>
+      <button type="submit">Login</button>
+      <% if(message){ %>
+      <h3><%=message %></h3>
+      <% } %>
+    </form>
+    <p>New User? go to Register </p>
+    <a href="/register"><button type="button">Register</button></a>
+    <p>Click here to go to Home page </p>
+    <a href="/"><button type="button">Home</button></a>
+  </body>
+</html>
