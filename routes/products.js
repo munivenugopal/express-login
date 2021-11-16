@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
+var session = require('express-session');
 
 const con = mysql.createConnection({
   host: 'localhost',
@@ -9,17 +10,23 @@ const con = mysql.createConnection({
   database: 'taskbook'
 });
 
-
+var sess;
 /* GET products page. */
 router.get('/', function(req, res, next) {
-    con.query('SELECT p.ProductID,p.ProductName,p.Unit,p.Price,c.name FROM products AS p LEFT JOIN category AS c ON p.category_id = c.id',(err,result)=>{
-        if(err) return console.log(err);
-        else{
-            res.render('index',{
-                data: result
-            });
-        }
-    });
+    sess = req.session;
+    if(sess.email){
+        con.query('SELECT p.ProductID,p.ProductName,p.Unit,p.Price,c.name FROM products AS p LEFT JOIN category AS c ON p.category_id = c.id',(err,result)=>{
+            if(err) return console.log(err);
+            else{
+                res.render('index',{
+                    data: result
+                });
+            }
+        });
+    }
+    else{
+        res.redirect('/user/login');
+    }
 });
 
 //edit router

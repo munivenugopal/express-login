@@ -4,6 +4,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mysql = require('mysql');
+var session = require('express-session');
+var bodyParser = require('body-parser');
+
 
 var productRouter = require('./routes/products');
 var sellerRouter = require('./routes/sellers');
@@ -33,6 +36,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({ secret:'newpassword' ,saveUninitialized: true,resave: true }));
 
 app.use('/products', productRouter);
 app.use('/sellers', sellerRouter);
@@ -42,10 +46,6 @@ app.get('/',(req,res)=>{
   res.render('home');
 });
 
-//app.use('/edit',editRouter);
-//app.use('/delete',deleteRouter);
-//app.use('/add',addRouter);
-//app.use('/view',viewRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
+var session = require('express-session');
 
 const con = mysql.createConnection({
   host: 'localhost',
@@ -9,13 +10,14 @@ const con = mysql.createConnection({
   database: 'taskbook'
 });
 
+
+//User Register
+
 router.get('/register',(req,res)=>{
     res.render('register',{
         message: ''
     });
 });
-
-//User Register
 
 router.post('/register',(req,res)=>{
     var name = req.body.name;
@@ -48,8 +50,11 @@ router.get('/login', function(req, res, next) {
     });
 });
 
+var sess;
+
 router.post('/login', (req,res)=>{
-    console.log(req.body);
+    sess = req.session;
+    sess.email = req.body.email;
     var log_email = req.body.email;
     var log_password = req.body.password;
     con.query('SELECT email FROM logintable WHERE email=?',[log_email],(err,result)=>{
@@ -105,6 +110,21 @@ router.post('/forgotpassword',(req,res,next)=>{
         }
     });
 });
+
+//User Logout
+
+router.get('/logout',(req,res)=>{
+    req.session.destroy((err)=>{
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.redirect('/user/login');
+        }
+    });
+});
+
+
 module.exports = router;
 
 
