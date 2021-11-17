@@ -13,7 +13,7 @@ const con = mysql.createConnection({
 
 //User Register
 
-router.get('/register',(req,res)=>{
+router.get('/register',(req,res,next)=>{
     res.render('register',{
         message: ''
     });
