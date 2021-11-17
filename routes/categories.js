@@ -10,13 +10,19 @@ const con = mysql.createConnection({
 });
 
 //get category home page
-
+var sess;
 router.get('/',(req,res)=>{
-  con.query('SELECT * FROM category ORDER BY name',(err,categorylist)=>{
-    res.render('category',{
-      categorylist: categorylist
+  sess = req.session;
+  if(sess.email){
+    con.query('SELECT * FROM category ORDER BY name',(err,categorylist)=>{
+      res.render('category',{
+        categorylist: categorylist
+      });
     });
-  });
+  }
+  else{
+    res.redirect('/user/login');
+  }
 });
 
 //get view category page

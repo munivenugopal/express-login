@@ -9,19 +9,27 @@ const con = mysql.createConnection({
   database: 'taskbook'
 });
 
+var sess;
 // GET sellers page.
 router.get('/',(req,res)=>{
-    con.query('SELECT s.sellerid , s.seller_name , p.ProductName FROM sellers AS s LEFT JOIN products AS p ON s.productid = p.ProductID ORDER BY s.sellerid',(err,result)=>{
-        if(err) return console.log(err);
-        else {
-            con.query('SELECT ProductID,ProductName FROM products',(err,productresult)=>{
-                res.render('sellers',{
-                    data: result,
-                    productsdata: productresult
+    sess = req.session;
+    if(sess.email){
+        con.query('SELECT s.sellerid , s.seller_name , p.ProductName FROM sellers AS s LEFT JOIN products AS p ON s.productid = p.ProductID ORDER BY s.sellerid',(err,result)=>{
+            if(err) return console.log(err);
+            else {
+                con.query('SELECT ProductID,ProductName FROM products',(err,productresult)=>{
+                    res.render('sellers',{
+                        data: result,
+                        productsdata: productresult
+                    });
                 });
-            });
-        }
-    });
+            }
+        });
+    }
+    else{
+        res.redirect('/user/login');
+    }
+    
 });
 
 //add new seller 
