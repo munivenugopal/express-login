@@ -42,8 +42,19 @@ app.use('/products', productRouter);
 app.use('/sellers', sellerRouter);
 app.use('/categories',categoryRouter);
 app.use('/user',userRouter);
+var sess;
 app.get('/',(req,res)=>{
-  res.render('home');
+  sess = req.session;
+  if(sess.email){
+    res.render('home',{
+      message: 1
+    });
+  }
+  else{
+    res.render('home',{
+      message: 0
+    });
+  }
 });
 
 
