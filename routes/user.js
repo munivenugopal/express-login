@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
 var session = require('express-session');
+var nodemailer = require('nodemailer');
 
 const con = mysql.createConnection({
   host: 'localhost',
@@ -89,18 +90,50 @@ router.get('/forgotpassword',(req,res)=>{
     });
 });
 
+var reqCode; 
+var email;
 router.post('/forgotpassword',(req,res,next)=>{
-    var email = req.body.email;
-    var newpassword = req.body.newpassword;
-    var sqlforemail = 'SELECT email FROM logintable WHERE email=?';
-    con.query(sqlforemail,[email],(err,result)=>{
-        if (result[0] !== undefined){
-            var sql = 'UPDATE logintable SET password=? WHERE email=?';
-            con.query(sql,[newpassword,email],(err,result)=>{
-                if(err) return console.log(err);
-                else {
-                        res.redirect('/user/login');
+    email = req.body.email;
+    var sql = 'SELECT email FROM logintable WHERE email = ?';
+    con.query(sql,[email],(err,result)=>{
+        if(result[0] !== undefined){
+            reqCode = Math.floor(Math.random() * 1000000);
+            console.log('Verification code is: '+reqCode);
+            var emailData = `
+                <p>You have a password reset update request</p>
+                <h4>Verification Code:</h4>
+                <p> ${reqCode} </p>
+            `
+                // create reusable transporter object using the default SMTP transport
+            const transporter = nodemailer.createTransport({
+                host: 'smtp.ethereal.email',
+                port: 587,
+                secure: false,
+                //service: 'Gmail',
+                auth: {
+                    user: 'chadd.leannon3@ethereal.email',
+                    pass: 'XWyw4KZADQuCq1zGVF'
+                },
+                tls: {
+                    rejectUnauthorized: false
                 }
+            });
+
+            // send mail with defined transport object
+            let info = transporter.sendMail({
+                from: '"Express Application" <chadd.leannon3@ethereal.email>', // sender address
+                to: email, // list of receivers
+                subject: "Password reset request", // Subject line
+                text: "copy the below code", // plain text body
+                html: emailData, // html body
+            });
+
+            console.log("Message sent: %s", info.messageId);
+            console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+            // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+
+            res.render('verify',{
+                message: ''
             });
         }
         else{
@@ -109,6 +142,38 @@ router.post('/forgotpassword',(req,res,next)=>{
             });
         }
     });
+});
+
+//User Reset Verification
+
+router.post('/reset',(req,res)=>{
+    var code = req.body.code;
+    console.log(code);
+    console.log(reqCode);
+    if(code == reqCode){
+        res.render('updatepassword');
+    }
+    else{
+        res.render('verify',{
+            message: 'Wrong Attempt Try Again'
+        });
+    }
+});
+
+//User Update Password
+
+router.post('/updatepassword',(req,res)=>{
+    var password = req.body.password;
+    con.query('UPDATE logintable SET password = ? WHERE email = ?',[password,email],(err,result)=>{
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.render('login',{
+                message: ''
+            });
+        }
+    })
 });
 
 //User Logout

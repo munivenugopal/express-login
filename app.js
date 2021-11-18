@@ -6,6 +6,7 @@ var logger = require('morgan');
 var mysql = require('mysql');
 var session = require('express-session');
 var bodyParser = require('body-parser');
+var nodemailer = require('nodemailer');
 
 
 var productRouter = require('./routes/products');
