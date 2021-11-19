@@ -106,13 +106,13 @@ router.post('/forgotpassword',(req,res,next)=>{
             `
                 // create reusable transporter object using the default SMTP transport
             const transporter = nodemailer.createTransport({
-                host: 'smtp.ethereal.email',
-                port: 587,
-                secure: false,
-                //service: 'Gmail',
+                //host: 'smtp.ethereal.email',
+                //port: 587,
+                //secure: false,
+                service: 'Gmail',
                 auth: {
-                    user: 'chadd.leannon3@ethereal.email',
-                    pass: 'XWyw4KZADQuCq1zGVF'
+                    user: 'mvg.0727@gmail.com',
+                    pass: 'gxcgriiwevnwnqoj'
                 },
                 tls: {
                     rejectUnauthorized: false
@@ -121,7 +121,7 @@ router.post('/forgotpassword',(req,res,next)=>{
 
             // send mail with defined transport object
             let info = transporter.sendMail({
-                from: '"Express Application" <chadd.leannon3@ethereal.email>', // sender address
+                from: '"Express Application" <mvg.0727@gmail.com>', // sender address
                 to: email, // list of receivers
                 subject: "Password reset request", // Subject line
                 text: "copy the below code", // plain text body
