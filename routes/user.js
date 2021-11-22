@@ -89,53 +89,61 @@ router.get('/forgotpassword',(req,res)=>{
         message:''
     });
 });
+ 
 
-var reqCode; 
-var email;
-var randomNumber;
+
 router.post('/forgotpassword',(req,res,next)=>{
-    randomNumber = Math.floor(Math.random() * 100);
-    email = req.body.email;
+    sess = req.session;
+    //sess.identification_number = req.body.email;
+    var email = req.body.email;
     var sql = 'SELECT email FROM logintable WHERE email = ?';
     con.query(sql,[email],(err,result)=>{
         if(result[0] !== undefined){
-            reqCode = `http://localhost:3000/user/updatepassword?id=${randomNumber}`;
-            var emailData = `
-                <h2>You have a password reset/update request</h2>
-                <h4>Click this link to update your password:</h4>
-                <p> ${reqCode} </p>
-            `
-                // create reusable transporter object using the default SMTP transport
-            const transporter = nodemailer.createTransport({
-                //host: 'smtp.ethereal.email',
-                //port: 587,
-                //secure: false,
-                service: 'Gmail',
-                auth: {
-                    user: 'mvg.0727@gmail.com',
-                    pass: 'gxcgriiwevnwnqoj'
-                },
-                tls: {
-                    rejectUnauthorized: false
-                }
-            });
+            con.query('SELECT id FROM logintable WHERE email = ?',[email],(err,emailresult)=>{
+                if(err) return console.log(err);
+                else{
+                    //var id = JSON.stringify(emailresult);
+                    var id_val = emailresult[0].id;
+                    sess.identification_number = id_val;
+                    var reqCode = `http://localhost:3000/user/updatepassword?id=${id_val}`;
+                    var emailData = `
+                        <h2>You have a password reset/update request</h2>
+                        <h4>Click this link to update your password:</h4>
+                        <p> ${reqCode} </p>
+                    `
+                        // create reusable transporter object using the default SMTP transport
+                    const transporter = nodemailer.createTransport({
+                        //host: 'smtp.ethereal.email',
+                        //port: 587,
+                        //secure: false,
+                        service: 'Gmail',
+                        auth: {
+                            user: 'mvg.0727@gmail.com',
+                            pass: 'gxcgriiwevnwnqoj'
+                        },
+                        tls: {
+                            rejectUnauthorized: false
+                        }
+                    });
 
-            // send mail with defined transport object
-            let info = transporter.sendMail({
-                from: '"Express Application" <mvg.0727@gmail.com>', // sender address
-                to: email, // list of receivers
-                subject: "Password reset request", // Subject line
-                text: "Password reset request", // plain text body
-                html: emailData, // html body
-            });
+                    // send mail with defined transport object
+                    let info = transporter.sendMail({
+                        from: '"Express Application" <mvg.0727@gmail.com>', // sender address
+                        to: email, // list of receivers
+                        subject: "Password reset request", // Subject line
+                        text: "Password reset request", // plain text body
+                        html: emailData, // html body
+                    });
 
-            console.log("Message sent: %s", info.messageId);
-            console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-            // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+                    console.log("Message sent: %s", info.messageId);
+                    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+                    // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
 
-            res.render('verify',{
-                message: ''
-            });
+                    res.render('verify',{
+                        message: ''
+                        });
+                    }
+                });
         }
         else{
             res.render('forgotpassword',{
@@ -161,32 +169,62 @@ router.post('/forgotpassword',(req,res,next)=>{
     }
 });*/
 
+
 //User Update Password
 router.get('/updatepassword',(req,res)=>{
-    var sessid = req.query.id; 
-    console.log('sess id is :'+sessid);
-    if(randomNumber == sessid){
+    sess = req.session;
+    var id = req.query.id;
+    if(sess.identification_number){
         res.render('updatepassword',{
-            message: ''
+            message: '',
+            id: id
         });
+       // sess.randomNumber = Math.floor(Math.random()*10);
+    }
+    else{
+        res.render('updatepassword',{
+            message:'This is not a valid session / cannot update password / Your session has Expired!!!',
+            id: id
+        });
+    }
+    /*
+    if(!page_views){
+        
+    }
+    else{
+        res.render('updatepassword',{
+            message:'This is not a valid session / cannot update password / Your session has Expired!!!',
+            id: id
+        });
+    }
+    /*if(randomNumber == sessid){
+        
         randomNumber = Math.floor(Math.random()* 100)
     }
     else{
         res.render('updatepassword',{
             message:'This is not a valid session / cannot update password / Your session has Expired!!!'
         });
-    }
+    }*/
 });
 
 router.post('/updatepassword',(req,res)=>{
+    var id = req.body.id;
     var password = req.body.password;
-    con.query('UPDATE logintable SET password = ? WHERE email = ?',[password,email],(err,result)=>{
+    con.query('UPDATE logintable SET password = ? WHERE id = ?',[password,id],(err,result)=>{
         if(err){
             console.log(err);
         }
         else{
-            res.render('login',{
-                message: ''
+            req.session.destroy((err)=>{
+                if(err){
+                    console.log(err);
+                }
+                else{
+                    res.render('login',{
+                        message:''
+                    });
+                }
             });
         }
     })
