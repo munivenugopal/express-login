@@ -92,12 +92,14 @@ router.get('/forgotpassword',(req,res)=>{
 
 var reqCode; 
 var email;
+var randomNumber;
 router.post('/forgotpassword',(req,res,next)=>{
+    randomNumber = Math.floor(Math.random() * 100);
     email = req.body.email;
     var sql = 'SELECT email FROM logintable WHERE email = ?';
     con.query(sql,[email],(err,result)=>{
         if(result[0] !== undefined){
-            reqCode = `http://localhost:3000/user/updatepassword`;
+            reqCode = `http://localhost:3000/user/updatepassword?id=${randomNumber}`;
             var emailData = `
                 <h2>You have a password reset/update request</h2>
                 <h4>Click this link to update your password:</h4>
@@ -161,7 +163,20 @@ router.post('/forgotpassword',(req,res,next)=>{
 
 //User Update Password
 router.get('/updatepassword',(req,res)=>{
-    res.render('updatepassword');
+    var sessid = req.query.id; 
+    console.log('sess id is :'+sessid);
+    console.log('random number is:'+randomNumber);
+    if(randomNumber == sessid){
+        res.render('updatepassword',{
+            message: ''
+        });
+        randomNumber = Math.floor(Math.random()* 100)
+    }
+    else{
+        res.render('updatepassword',{
+            message:'This is not a valid session / cannot update password / Your session has Expired!!!'
+        });
+    }
 });
 
 router.post('/updatepassword',(req,res)=>{
