@@ -97,11 +97,10 @@ router.post('/forgotpassword',(req,res,next)=>{
     var sql = 'SELECT email FROM logintable WHERE email = ?';
     con.query(sql,[email],(err,result)=>{
         if(result[0] !== undefined){
-            reqCode = Math.floor(Math.random() * 1000000);
-            console.log('Verification code is: '+reqCode);
+            reqCode = `http://localhost:3000/user/updatepassword`;
             var emailData = `
-                <p>You have a password reset update request</p>
-                <h4>Verification Code:</h4>
+                <h2>You have a password reset/update request</h2>
+                <h4>Click this link to update your password:</h4>
                 <p> ${reqCode} </p>
             `
                 // create reusable transporter object using the default SMTP transport
@@ -124,7 +123,7 @@ router.post('/forgotpassword',(req,res,next)=>{
                 from: '"Express Application" <mvg.0727@gmail.com>', // sender address
                 to: email, // list of receivers
                 subject: "Password reset request", // Subject line
-                text: "copy the below code", // plain text body
+                text: "Password reset request", // plain text body
                 html: emailData, // html body
             });
 
@@ -146,7 +145,7 @@ router.post('/forgotpassword',(req,res,next)=>{
 
 //User Reset Verification
 
-router.post('/reset',(req,res)=>{
+/*router.post('/reset',(req,res)=>{
     var code = req.body.code;
     console.log(code);
     console.log(reqCode);
@@ -158,9 +157,12 @@ router.post('/reset',(req,res)=>{
             message: 'Wrong Attempt Try Again'
         });
     }
-});
+});*/
 
 //User Update Password
+router.get('/updatepassword',(req,res)=>{
+    res.render('updatepassword');
+});
 
 router.post('/updatepassword',(req,res)=>{
     var password = req.body.password;
