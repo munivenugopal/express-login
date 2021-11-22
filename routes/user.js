@@ -165,7 +165,6 @@ router.post('/forgotpassword',(req,res,next)=>{
 router.get('/updatepassword',(req,res)=>{
     var sessid = req.query.id; 
     console.log('sess id is :'+sessid);
-    console.log('random number is:'+randomNumber);
     if(randomNumber == sessid){
         res.render('updatepassword',{
             message: ''
