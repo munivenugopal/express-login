@@ -24,6 +24,10 @@ router.post('/register',(req,res)=>{
     var name = req.body.name;
     var reg_email = req.body.email;
     var reg_password = req.body.password;
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var time = today.getHours()+':'+today.getMinutes()+':'+today.getSeconds();
+    var datetime = date+' '+time;
     con.query('SELECT email FROM logintable WHERE email = ?',[reg_email],(err,result)=>{
         if(result[0] !== undefined){
             return res.render('register',{
@@ -31,7 +35,7 @@ router.post('/register',(req,res)=>{
             });
         }
         else{
-            con.query('INSERT INTO logintable SET ?',{name: name, email: reg_email,password: reg_password},(err,result)=>{
+            con.query('INSERT INTO logintable SET ?',{name: name, email: reg_email,password: reg_password,last_modified_time: datetime},(err,result)=>{
                 if(err) return console.log(err);
                 else return console.log('Number of records inserted: '+ result.affectedRows)
             });
@@ -93,57 +97,65 @@ router.get('/forgotpassword',(req,res)=>{
 
 
 router.post('/forgotpassword',(req,res,next)=>{
-    sess = req.session;
+    //sess = req.session;
     //sess.identification_number = req.body.email;
     var email = req.body.email;
     var sql = 'SELECT email FROM logintable WHERE email = ?';
     con.query(sql,[email],(err,result)=>{
         if(result[0] !== undefined){
             con.query('SELECT id FROM logintable WHERE email = ?',[email],(err,emailresult)=>{
-                if(err) return console.log(err);
+                if(err) return console.log('line 107:'+err);
                 else{
-                    //var id = JSON.stringify(emailresult);
+                    var today = new Date();
+                    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+                    var time = today.getHours() + ":" + (today.getMinutes()+2) + ":" + today.getSeconds();
+                    var dateTime = date+' '+time;
                     var id_val = emailresult[0].id;
-                    sess.identification_number = id_val;
-                    var reqCode = `http://localhost:3000/user/updatepassword?id=${id_val}`;
-                    var emailData = `
-                        <h2>You have a password reset/update request</h2>
-                        <h4>Click this link to update your password:</h4>
-                        <p> ${reqCode} </p>
-                    `
-                        // create reusable transporter object using the default SMTP transport
-                    const transporter = nodemailer.createTransport({
-                        //host: 'smtp.ethereal.email',
-                        //port: 587,
-                        //secure: false,
-                        service: 'Gmail',
-                        auth: {
-                            user: 'mvg.0727@gmail.com',
-                            pass: 'gxcgriiwevnwnqoj'
-                        },
-                        tls: {
-                            rejectUnauthorized: false
+                    con.query('UPDATE logintable SET last_modified_time = ? WHERE id = ?',[dateTime,id_val],(err,result)=>{
+                        if(err) return console.log('line 115:'+err);
+                        else{
+                            //var id = JSON.stringify(emailresult);
+                            var reqCode = `http://localhost:3000/user/updatepassword?id=${id_val}`;
+                            var emailData = `
+                                <h2>You have a password reset/update request</h2>
+                                <h4>Click this link to update your password:</h4>
+                                <p> ${reqCode} </p>
+                            `
+                            // create reusable transporter object using the default SMTP transport
+                            const transporter = nodemailer.createTransport({
+                                //host: 'smtp.ethereal.email',
+                                //port: 587,
+                                //secure: false,
+                                service: 'Gmail',
+                                auth: {
+                                    user: 'mvg.0727@gmail.com',
+                                    pass: 'gxcgriiwevnwnqoj',
+                                },
+                                tls: {
+                                    rejectUnauthorized: false
+                                }
+                            });
+
+                            // send mail with defined transport object
+                            let info = transporter.sendMail({
+                                from: '"Express Application" <mvg.0727@gmail.com>', // sender address
+                                to: email, // list of receivers
+                                subject: "Password reset request", // Subject line
+                                text: "Password reset request", // plain text body
+                                html: emailData, // html body
+                            });
+
+                            console.log("Message sent: %s", info.messageId);
+                            console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+                            // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+
+                            res.render('verify',{
+                                message: ''
+                            });
                         }
-                    });
-
-                    // send mail with defined transport object
-                    let info = transporter.sendMail({
-                        from: '"Express Application" <mvg.0727@gmail.com>', // sender address
-                        to: email, // list of receivers
-                        subject: "Password reset request", // Subject line
-                        text: "Password reset request", // plain text body
-                        html: emailData, // html body
-                    });
-
-                    console.log("Message sent: %s", info.messageId);
-                    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-                    // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-
-                    res.render('verify',{
-                        message: ''
-                        });
-                    }
-                });
+                    });  
+                }
+            });
         }
         else{
             res.render('forgotpassword',{
@@ -172,21 +184,40 @@ router.post('/forgotpassword',(req,res,next)=>{
 
 //User Update Password
 router.get('/updatepassword',(req,res)=>{
-    sess = req.session;
+    //sess = req.session;
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var time = today.getHours() + ":" +today.getMinutes()+ ":" + today.getSeconds();
+    var currentDateTime = date+' '+time;
     var id = req.query.id;
-    if(sess.identification_number){
-        res.render('updatepassword',{
-            message: '',
-            id: id
-        });
-       // sess.randomNumber = Math.floor(Math.random()*10);
-    }
-    else{
-        res.render('updatepassword',{
-            message:'This is not a valid session / cannot update password / Your session has Expired!!!',
-            id: id
-        });
-    }
+    var maxDateTime,date1,date2;
+    date1 = new Date(currentDateTime);
+    con.query('SELECT last_modified_time FROM logintable WHERE id = ?',[id],(err,timeResult)=>{
+        if(err) return console.log('line 195:'+err);
+        else{
+            maxDateTime = timeResult[0].last_modified_time;
+            date2 = new Date(maxDateTime);
+            if(date1 < date2){
+                res.render('updatepassword',{
+                    message: '',
+                    id: id
+                });
+                console.log(date1);
+                console.log(date2);
+               // sess.randomNumber = Math.floor(Math.random()*10);
+            }
+            else{
+                res.render('updatepassword',{
+                    message:'This is not a valid session / cannot update password / Your session has Expired!!!',
+                    id: id
+                });
+                console.log(date1);
+                console.log(date2);
+            }
+        }
+    });
+   // console.log('Database time is:'+maxDateTime);
+    
     /*
     if(!page_views){
         
@@ -216,15 +247,8 @@ router.post('/updatepassword',(req,res)=>{
             console.log(err);
         }
         else{
-            req.session.destroy((err)=>{
-                if(err){
-                    console.log(err);
-                }
-                else{
-                    res.render('login',{
-                        message:''
-                    });
-                }
+            res.render('login',{
+                message:''
             });
         }
     })
