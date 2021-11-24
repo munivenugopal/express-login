@@ -195,24 +195,32 @@ router.get('/updatepassword',(req,res)=>{
     con.query('SELECT last_modified_time FROM logintable WHERE id = ?',[id],(err,timeResult)=>{
         if(err) return console.log('line 195:'+err);
         else{
-            maxDateTime = timeResult[0].last_modified_time;
-            date2 = new Date(maxDateTime);
-            if(date1 < date2){
-                res.render('updatepassword',{
-                    message: '',
-                    id: id
-                });
-                console.log(date1);
-                console.log(date2);
-               // sess.randomNumber = Math.floor(Math.random()*10);
+            if(timeResult[0] !== undefined){
+                maxDateTime = timeResult[0].last_modified_time;
+                date2 = new Date(maxDateTime);
+                if(date1 < date2){
+                    res.render('updatepassword',{
+                        message: '',
+                        id: id
+                    });
+                    console.log(date1);
+                    console.log(date2);
+                // sess.randomNumber = Math.floor(Math.random()*10);
+                }
+                else{
+                    res.render('updatepassword',{
+                        message:'This is not a valid session / cannot update password / Your session has Expired!!!',
+                        id: id
+                    });
+                    console.log(date1);
+                    console.log(date2);
+                }
             }
             else{
                 res.render('updatepassword',{
-                    message:'This is not a valid session / cannot update password / Your session has Expired!!!',
+                    message:'The userid is not matched with any of our users in our database, so please try to register first!!!',
                     id: id
                 });
-                console.log(date1);
-                console.log(date2);
             }
         }
     });
