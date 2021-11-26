@@ -89,20 +89,18 @@ router.post('/login', (req,res)=>{
 //User Forgot Password
 
 router.get('/forgotpassword',(req,res)=>{
-    res.render('forgotpassword',{
-        message:''
-    });
+    res.render('forgotpassword');
 });
  
 
 
 router.post('/forgotpassword',(req,res,next)=>{
-    //sess = req.session;
-    //sess.identification_number = req.body.email;
     var email = req.body.email;
     var sql = 'SELECT email FROM logintable WHERE email = ?';
     con.query(sql,[email],(err,result)=>{
-        if(result[0] !== undefined){
+        console.log('Line 103:result:'+(result+1)+':');
+        console.log('line 104:'+typeof result);
+        if(Object.keys(result).length !== 0){
             con.query('SELECT id FROM logintable WHERE email = ?',[email],(err,emailresult)=>{
                 if(err) return console.log('line 107:'+err);
                 else{
@@ -114,7 +112,6 @@ router.post('/forgotpassword',(req,res,next)=>{
                     con.query('UPDATE logintable SET last_modified_time = ? WHERE id = ?',[dateTime,id_val],(err,result)=>{
                         if(err) return console.log('line 115:'+err);
                         else{
-                            //var id = JSON.stringify(emailresult);
                             var reqCode = `http://localhost:3000/user/updatepassword?id=${id_val}`;
                             var emailData = `
                                 <h2>You have a password reset/update request</h2>
@@ -145,12 +142,17 @@ router.post('/forgotpassword',(req,res,next)=>{
                                 html: emailData, // html body
                             });
 
-                            console.log("Message sent: %s", info.messageId);
-                            console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-                            // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-
-                            res.render('verify',{
-                                message: ''
+                            //instead of rendering another page with simple message, try to print that simple message in the same page with jquery ajax
+                            //var dataToSend = {'message':'Please check your mail to get password reset link'};
+                            //var conclusion = JSON.stringify(dataToSend);
+                            /*factual.get('/user/forgotpassword',{q:'Please check your mail you reset your password!!!'},function(error , data){
+                                console.log('line 150:'+data);
+                                res.writeHead(200,{'Content-Type':'application/json'});
+                                res.end(JSON.stringify(data));
+                            });*/
+                            //res.send({ data: 'Please check your mail to reset your password!!!' });
+                            res.json({
+                                msg: 'please check your mail to reset your password.'
                             });
                         }
                     });  
@@ -158,28 +160,12 @@ router.post('/forgotpassword',(req,res,next)=>{
             });
         }
         else{
-            res.render('forgotpassword',{
-                message:'There is no user registered with this email!!!....Try Again!!!'
+            res.json({
+                msg:'There is no user registered with this email!!!....Try Again!!!'
             });
         }
     });
 });
-
-//User Reset Verification
-
-/*router.post('/reset',(req,res)=>{
-    var code = req.body.code;
-    console.log(code);
-    console.log(reqCode);
-    if(code == reqCode){
-        res.render('updatepassword');
-    }
-    else{
-        res.render('verify',{
-            message: 'Wrong Attempt Try Again'
-        });
-    }
-});*/
 
 
 //User Update Password
@@ -224,27 +210,6 @@ router.get('/updatepassword',(req,res)=>{
             }
         }
     });
-   // console.log('Database time is:'+maxDateTime);
-    
-    /*
-    if(!page_views){
-        
-    }
-    else{
-        res.render('updatepassword',{
-            message:'This is not a valid session / cannot update password / Your session has Expired!!!',
-            id: id
-        });
-    }
-    /*if(randomNumber == sessid){
-        
-        randomNumber = Math.floor(Math.random()* 100)
-    }
-    else{
-        res.render('updatepassword',{
-            message:'This is not a valid session / cannot update password / Your session has Expired!!!'
-        });
-    }*/
 });
 
 router.post('/updatepassword',(req,res)=>{
