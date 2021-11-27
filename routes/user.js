@@ -15,20 +15,37 @@ const con = mysql.createConnection({
 //User Register
 
 router.get('/register',(req,res,next)=>{
-    res.render('register',{
-        message: ''
-    });
+    res.render('register');
 });
 
 router.post('/register',(req,res)=>{
     var name = req.body.name;
     var reg_email = req.body.email;
     var reg_password = req.body.password;
+    console.log('name:'+name+' email:'+reg_email+' password:'+reg_password);
     var today = new Date();
     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
     var time = today.getHours()+':'+today.getMinutes()+':'+today.getSeconds();
     var datetime = date+' '+time;
     con.query('SELECT email FROM logintable WHERE email = ?',[reg_email],(err,result)=>{
+        if(err) console.log('error while getting a non-existing email in the database!!!'+err);
+        else{
+            if(Object.keys(result).length == 1){
+                res.json({
+                    msg:'The email is already in use!!!'
+                });
+            }
+            else{
+                con.query('INSERT INTO logintable SET ?',{name: name, email: reg_email,password: reg_password,last_modified_time: datetime},(err,result)=>{
+                    if(err) return console.log("error in line 41:"+err);
+                    else return console.log('Number of records inserted: '+ result.affectedRows)
+                });
+                res.json({
+                    msg:'success'
+                });
+            }
+        }
+        /*
         if(result[0] !== undefined){
             return res.render('register',{
                 message: 'The email is already in use!'
@@ -43,6 +60,7 @@ router.post('/register',(req,res)=>{
                 message: ''
             });
         }
+        */
     });
 });
 
@@ -50,9 +68,7 @@ router.post('/register',(req,res)=>{
 //User Login
 
 router.get('/login', function(req, res, next) {
-    res.render('login',{
-        message:''
-    });
+    res.render('login');
 });
 
 var sess;
@@ -68,19 +84,21 @@ router.post('/login', (req,res)=>{
                 if (err) return console.log(err);
                 else{
                     if (result[0].password === log_password){
-                        res.redirect('/products');
+                        res.json({
+                            msg:'success'
+                        });
                     }
                     else{
-                        res.render('login',{
-                            message: 'Incorecct Password....Try Again!'
+                        res.json({
+                            msg: 'Incorecct Password....Try Again!'
                         });
                     }
                 }
             });
         }
         else{
-            res.render('login',{
-                message: 'Looks like the User was Not Registered!!!...please Register and Try again!!!'
+            res.json({
+                msg: 'Looks like the User was Not Registered!!!...please Register and Try again!!!'
             });
         }
     }); 
