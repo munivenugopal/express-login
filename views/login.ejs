@@ -1,58 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="/stylesheets/register.css">
-    <title>login</title>
-  </head>
-  <body> 
-    <h1>Login Form</h1>
-    <form action="/user/login" method="POST">
-      <div>
-        <label for="email">Email</label><br>
-        <input type="email" id="email" name="email" required><br>
-        <label for="password">Password </label><br>
-        <input type="password" id="password" name="password" required><br>
-      </div>
-      <div>
-        <a href="/user/forgotpassword">forgot password</a>
-      </div>
-      <button type="button">Login</button>
-      <h3 id="err_msg"></h3>
-    </form>
-    <p>New User? go to Register </p>
-    <a href="/user/register"><button type="button">Register</button></a>
-    <p>Click here to go to Home page </p>
-    <a href="/"><button type="button">Home</button></a>
-    <script>
-      $(document).ready(function(){
-        $('#err_msg').hide();
-        $('button').click(function(){
-          var email = $("input[name='email']").val();
-          var password = $("input[name='password']").val();
-          $.ajax({
-            url:'/user/login',
-            type:"POST",
-            data:{
-              email: email,
-              password: password
-            },
-            success: function(result){
-              if(result.msg == 'success'){
-                console.log('its a success attempt to login, need to redirect to products page!!');
-                location.href = '/products';
-              }
-              else{
-                $('#err_msg').show();
-                $('#err_msg').text(result.msg).css("color","red");
-              }
-            }
-          });
-        });
+
+<h1>Login Form</h1>
+<form action="/user/login" method="POST">
+  <div>
+    <label for="email">Email</label><br>
+    <input type="email" id="email" name="email" required><br>
+    <label for="password">Password </label><br>
+    <input type="password" id="password" name="password" required><br>
+  </div>
+  <div>
+    <a href="/user/forgotpassword">forgot password</a>
+  </div>
+  <button type="button">Login</button>
+  <h3 id="err_msg"></h3>
+</form>
+<p>New User? go to Register </p>
+<a href="/user/register"><button type="button">Register</button></a>
+<p>Click here to go to Home page </p>
+<a href="/"><button type="button">Home</button></a>
+
+<script>
+  $(document).ready(function(){
+    $('#err_msg').hide();
+    $('button').click(function(){
+      var email = $("input[name='email']").val();
+      var password = $("input[name='password']").val();
+      $.ajax({
+        url:'/user/login',
+        type:"POST",
+        data:{
+          email: email,
+          password: password
+        },
+        success: function(result){
+          if(result.msg == 'success'){
+            console.log('its a success attempt to login, need to redirect to products page!!');
+            location.href = '/products';
+          }
+          else{
+            $('#err_msg').show();
+            $('#err_msg').text(result.msg).css("color","red");
+          }
+        }
       });
-    </script>
-  </body>
-</html>
+    });
+  });
+</script>
+

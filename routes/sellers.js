@@ -20,7 +20,8 @@ router.get('/',(req,res)=>{
                 con.query('SELECT ProductID,ProductName FROM products',(err,productresult)=>{
                     res.render('sellers',{
                         data: result,
-                        productsdata: productresult
+                        productsdata: productresult,
+                        layout:'applayout'
                     });
                 });
             }
@@ -38,7 +39,8 @@ router.get('/add',(req,res)=>{
     con.query('SELECT ProductName FROM products',(err,productslist)=>{
         res.render('addseller',{
             message:' ',
-            productslist: productslist
+            productslist: productslist,
+            layout:'applayout'
         });
     });
 });
@@ -59,7 +61,8 @@ router.post('/add',(req,res)=>{
             if(err) {
                 console.log('Error while inserting alien product id"s'+err);
                 res.render('addseller',{
-                    message: "Entered Product ID is not a valid ID, Check Products Page for ProductID's."
+                    message: "Entered Product ID is not a valid ID, Check Products Page for ProductID's.",
+                    layout:"applayout"
                 });
             } 
             else {
@@ -67,7 +70,8 @@ router.post('/add',(req,res)=>{
                     con.query('SELECT s.sellerid , s.seller_name , p.ProductName FROM sellers AS s LEFT JOIN products AS p ON s.productid = p.ProductID ORDER BY s.sellerid',(err,sellerstable)=>{
                         res.render('sellers',{
                             data: sellerstable,
-                            productsdata: productresult
+                            productsdata: productresult,
+                            layout:'applayout'
                         });
                     });
                 });
@@ -90,7 +94,8 @@ router.get('/editseller',(req,res)=>{
                 res.render('editseller',{
                     data: result,
                     warning: ' ',
-                    productslist: productslist
+                    productslist: productslist,
+                    layout:'applayout'
                 });
             });
         }
@@ -113,7 +118,8 @@ router.post('/editseller',(req,res)=>{
                     else{
                         res.render('editseller',{
                             data: result,
-                            warning: 'Entered Product ID is not a valid ID, Check Products Page for ProductID`s. '
+                            warning: 'Entered Product ID is not a valid ID, Check Products Page for ProductID`s. ',
+                            layout:'applayout'
                         });
                     }
                 });
@@ -123,7 +129,8 @@ router.post('/editseller',(req,res)=>{
                     con.query('SELECT s.sellerid , s.seller_name , p.ProductName FROM sellers AS s LEFT JOIN products AS p ON s.productid = p.ProductID ORDER BY s.sellerid',(err,sellerstable)=>{
                         res.render('sellers',{
                             data: sellerstable,
-                            productsdata: productresult
+                            productsdata: productresult,
+                            layout:'applayout'
                         });
                     });
                 });
@@ -143,7 +150,8 @@ router.get('/deleteseller',(req,res)=>{
                 con.query('SELECT s.sellerid , s.seller_name , p.ProductName FROM sellers AS s LEFT JOIN products AS p ON s.productid = p.ProductID ORDER BY s.sellerid',(err,sellerstable)=>{
                     res.render('sellers',{
                         data: sellerstable,
-                        productsdata: productresult
+                        productsdata: productresult,
+                        layout:'applayout'
                     });
                 });
             });
@@ -162,7 +170,8 @@ router.get('/viewseller',(req,res)=>{
             con.query('select seller_name from sellers where sellerid = ?',[sellerid],(err,sellername)=>{
                 res.render('viewseller',{
                     data: result,
-                    sellername: sellername
+                    sellername: sellername,
+                    layout:'applayout'
                 });
             });
         }
@@ -180,7 +189,8 @@ router.get('/viewproduct',(req,res)=>{
                 res.render('viewproduct',{
                     sellersdata:'',
                     message:"Looks like this product has no sellers available. First add Sellers for this product in Sellers Page!!!.",
-                    productname: productname
+                    productname: productname,
+                    layout:'applayout'
                 });
                 console.log(productname);
             });
@@ -190,7 +200,8 @@ router.get('/viewproduct',(req,res)=>{
                 res.render('viewproduct',{
                     sellersdata: result,
                     message:'',
-                    productname: productname
+                    productname: productname,
+                    layout:'applayout'
                 });
             });
         }

@@ -15,7 +15,9 @@ const con = mysql.createConnection({
 //User Register
 
 router.get('/register',(req,res,next)=>{
-    res.render('register');
+    res.render('register',{
+        layout:'prelayout'
+    });
 });
 
 router.post('/register',(req,res)=>{
@@ -68,7 +70,9 @@ router.post('/register',(req,res)=>{
 //User Login
 
 router.get('/login', function(req, res, next) {
-    res.render('login');
+    res.render('login',{
+        layout:'prelayout'
+    });
 });
 
 var sess;
@@ -107,7 +111,9 @@ router.post('/login', (req,res)=>{
 //User Forgot Password
 
 router.get('/forgotpassword',(req,res)=>{
-    res.render('forgotpassword');
+    res.render('forgotpassword',{
+        layout:'prelayout'
+    });
 });
  
 
@@ -199,13 +205,14 @@ router.get('/updatepassword',(req,res)=>{
     con.query('SELECT last_modified_time FROM logintable WHERE id = ?',[id],(err,timeResult)=>{
         if(err) return console.log('line 195:'+err);
         else{
-            if(timeResult[0] !== undefined){
+            if(Object.keys(timeResult).length == 1){
                 maxDateTime = timeResult[0].last_modified_time;
                 date2 = new Date(maxDateTime);
                 if(date1 < date2){
                     res.render('updatepassword',{
                         message: '',
-                        id: id
+                        id: id,
+                        layout:'prelayout'
                     });
                     console.log(date1);
                     console.log(date2);
@@ -214,7 +221,8 @@ router.get('/updatepassword',(req,res)=>{
                 else{
                     res.render('updatepassword',{
                         message:'This is not a valid session / cannot update password / Your session has Expired!!!',
-                        id: id
+                        id: id,
+                        layout:'prelayout'
                     });
                     console.log(date1);
                     console.log(date2);
@@ -223,7 +231,8 @@ router.get('/updatepassword',(req,res)=>{
             else{
                 res.render('updatepassword',{
                     message:'The userid is not matched with any of our users in our database, so please try to register first!!!',
-                    id: id
+                    id: id,
+                    layout:'prelayout'
                 });
             }
         }
@@ -238,9 +247,7 @@ router.post('/updatepassword',(req,res)=>{
             console.log(err);
         }
         else{
-            res.render('login',{
-                message:''
-            });
+            res.redirect('/user/login');
         }
     })
 });

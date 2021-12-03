@@ -7,6 +7,7 @@ var mysql = require('mysql');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var nodemailer = require('nodemailer');
+var expressEjsLayouts = require('express-ejs-layouts');
 
 
 var productRouter = require('./routes/products');
@@ -42,6 +43,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+app.use(expressEjsLayouts);
 
 app.use('/products', productRouter);
 app.use('/sellers', sellerRouter);
@@ -52,11 +54,13 @@ app.get('/',(req,res)=>{
   sess = req.session;
   if(sess.email){
     res.render('home',{
+      layout:'prelayout',
       message: 1
     });
   }
   else{
     res.render('home',{
+      layout:'prelayout',
       message: 0
     });
   }

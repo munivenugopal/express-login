@@ -16,7 +16,8 @@ router.get('/',(req,res)=>{
   if(sess.email){
     con.query('SELECT * FROM category ORDER BY name',(err,categorylist)=>{
       res.render('category',{
-        categorylist: categorylist
+        categorylist: categorylist,
+        layout:'applayout'
       });
     });
   }
@@ -33,7 +34,8 @@ router.get('/viewcategory',(req,res)=>{
     con.query('SELECT name FROM category WHERE id = ?',[category_id],(err,category_name)=>{
       res.render('viewcategory',{
         data: result,
-        category_name: category_name
+        category_name: category_name,
+        layout:'applayout'
       });
     });
   });

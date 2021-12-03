@@ -19,7 +19,8 @@ router.get('/', function(req, res, next) {
             if(err) return console.log(err);
             else{
                 res.render('index',{
-                    data: result
+                    data: result,
+                    layout:'applayout'
                 });
             }
         });
@@ -41,7 +42,8 @@ router.get('/edit', function(req, res, next) {
             con.query('SELECT name FROM category ORDER BY name',(err,categorylist)=>{
                 res.render('edit',{
                     data: result,
-                    categorylist: categorylist
+                    categorylist: categorylist,
+                    layout:'applayout'
                 });
             });
         }
@@ -60,7 +62,8 @@ router.post('/edit',(req,res)=>{
                 if(err) return console.log(err);
                 else{
                     res.render('index',{
-                        data: result
+                        data: result,
+                        layout:'applayout'
                     });
                 }
             });
@@ -80,7 +83,8 @@ router.get('/delete',(req,res)=>{
             if(err) return console.log(err);
             else{
                 res.render('index',{
-                    data: result
+                    data: result,
+                    layout:'applayout'
                 });
             }
         });
@@ -93,7 +97,8 @@ router.get('/delete',(req,res)=>{
 router.get('/add',(req,res)=>{
     con.query('SELECT name FROM category ORDER BY name',(err,categorylist)=>{
         res.render('add',{
-            categorylist: categorylist
+            categorylist: categorylist,
+            layout:'applayout'
         });
     });
 });
@@ -113,7 +118,8 @@ router.post('/add',(req,res)=>{
                   if(err) return console.log(err);
                   else{
                       res.render('index',{
-                          data: result
+                          data: result,
+                          layout:'applayout'
                       });
                     }
               });
@@ -135,7 +141,8 @@ router.get('/view',(req,res)=>{
                 res.render('view',{
                     data: result,
                     sellerslist: sellerslist,
-                    categoryname: categoryname
+                    categoryname: categoryname,
+                    layout:'applayout'
                 });
             }) 
         });
