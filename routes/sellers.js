@@ -107,35 +107,38 @@ router.post('/editseller',(req,res)=>{
     var selectedProduct = req.body.product;
 
     con.query('SELECT ProductID FROM products WHERE ProductName = ?',[selectedProduct],(err,result)=>{
-        productid = result[0]['ProductID'];
-        var sql = 'UPDATE sellers SET seller_name = ?, productid = ? WHERE sellerid = ? ';
-        con.query(sql,[sellername,productid,editsellerid],(err,result)=>{
-            if(err){
-                console.log('Error while entering alien product id"s'+err);
-                var sql = 'SELECT * FROM sellers WHERE sellerid = ?';
-                con.query(sql,[editsellerid],(err,result)=>{
-                    if(err) return console.log(err);
-                    else{
-                        res.render('editseller',{
-                            data: result,
-                            warning: 'Entered Product ID is not a valid ID, Check Products Page for ProductID`s. ',
-                            layout:'applayout'
-                        });
-                    }
-                });
-            }
-            else {
-                con.query('SELECT ProductID,ProductName FROM products',(err,productresult)=>{
-                    con.query('SELECT s.sellerid , s.seller_name , p.ProductName FROM sellers AS s LEFT JOIN products AS p ON s.productid = p.ProductID ORDER BY s.sellerid',(err,sellerstable)=>{
-                        res.render('sellers',{
-                            data: sellerstable,
-                            productsdata: productresult,
-                            layout:'applayout'
+        if(err) return console.log(err);
+        else{
+            productid = result[0]['ProductID'];
+            var sql = 'UPDATE sellers SET seller_name = ?, productid = ? WHERE sellerid = ? ';
+            con.query(sql,[sellername,productid,editsellerid],(err,result)=>{
+                if(err){
+                    console.log('Error while entering alien product id"s'+err);
+                    var sql = 'SELECT * FROM sellers WHERE sellerid = ?';
+                    con.query(sql,[editsellerid],(err,result)=>{
+                        if(err) return console.log(err);
+                        else{
+                            res.render('editseller',{
+                                data: result,
+                                warning: 'Entered Product ID is not a valid ID, Check Products Page for ProductID`s. ',
+                                layout:'applayout'
+                            });
+                        }
+                    });
+                }
+                else {
+                    con.query('SELECT ProductID,ProductName FROM products',(err,productresult)=>{
+                        con.query('SELECT s.sellerid , s.seller_name , p.ProductName FROM sellers AS s LEFT JOIN products AS p ON s.productid = p.ProductID ORDER BY s.sellerid',(err,sellerstable)=>{
+                            res.render('sellers',{
+                                data: sellerstable,
+                                productsdata: productresult,
+                                layout:'applayout'
+                            });
                         });
                     });
-                });
-            }
-        });
+                }
+            });
+        }
     })
 });
 

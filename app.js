@@ -14,6 +14,7 @@ var productRouter = require('./routes/products');
 var sellerRouter = require('./routes/sellers');
 var categoryRouter = require('./routes/categories');
 var userRouter = require('./routes/user');
+var shippingRouter = require('./routes/shipment');
 
 var app = express();
 
@@ -49,6 +50,7 @@ app.use('/products', productRouter);
 app.use('/sellers', sellerRouter);
 app.use('/categories',categoryRouter);
 app.use('/user',userRouter);
+app.use('/shipment',shippingRouter);
 var sess;
 app.get('/',(req,res)=>{
   sess = req.session;

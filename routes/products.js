@@ -31,43 +31,51 @@ router.get('/', function(req, res, next) {
 });
 
 //edit router
-var editproductid=0;
 
 router.get('/edit', function(req, res, next) {
-    editproductid = req.query.productid;
+    var editproductid = req.query.productid;
+    console.log('editproductid:'+editproductid);
     var sql = 'SELECT * FROM products WHERE ProductID = ?';
     con.query(sql,[editproductid],(err,result)=>{
         if(err) return console.log(err);
         else{
             con.query('SELECT name FROM category ORDER BY name',(err,categorylist)=>{
-                res.render('edit',{
-                    data: result,
-                    categorylist: categorylist,
-                    layout:'applayout'
-                });
+                if(err) return console.log('line 42:'+err);
+                else{
+                    res.json({
+                        msg:'success',
+                        data: result,
+                        categorylist: categorylist,
+                    });
+                }
             });
         }
     });
 });
 
 router.post('/edit',(req,res)=>{
+    var editproductid = req.body.ProductID;
     var productname = req.body.ProductName;
     var unit = req.body.Unit;
     var price = req.body.Price;
-    var sql = 'UPDATE products SET ProductName = ? , Unit = ? , Price = ? WHERE ProductID = ?';
-    con.query(sql,[productname,unit,price,editproductid],(err,result)=>{
-        if(err) return console.log(err);
-        else {
-            con.query('SELECT p.ProductID,p.ProductName,p.Unit,p.Price,c.name FROM products AS p LEFT JOIN category AS c ON p.category_id = c.id',(err,result)=>{
-                if(err) return console.log(err);
-                else{
-                    res.render('index',{
-                        data: result,
-                        layout:'applayout'
-                    });
-                }
-            });
-        }
+    var selectedCategory = req.body.selectedCategory;
+    con.query('SELECT id FROM category WHERE name = ?',[selectedCategory],(err,result)=>{
+        var category_id = result[0]['id'];
+        console.log('line 64:'+category_id);
+        var sql = 'UPDATE products SET ProductName = ? , Unit = ? , Price = ?,category_id = ? WHERE ProductID = ?';
+        con.query(sql,[productname,unit,price,category_id,editproductid],(err,result)=>{
+            if(err) return console.log(err);
+            else{
+                con.query('SELECT p.ProductID,p.ProductName,p.Unit,p.Price,c.name FROM products AS p LEFT JOIN category AS c ON p.category_id = c.id',(err,result)=>{
+                    if(err) return console.log(err);
+                    else{
+                        res.json({
+                            msg: 'success'
+                        });
+                    }
+                });
+            }
+        });
     });
 });
 

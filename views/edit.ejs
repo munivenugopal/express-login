@@ -1,67 +1,95 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
-    <title>Edit</title>
-</head>
-<body>
-    <h2>Enter the Details of the Selected Product</h2>
-    <form action="/products/edit" method="post">
+<h2>Enter the Details of the Selected Product</h2>
+<form action="/products/edit" method="post">
+    <div>
         <div>
-            <div>
-                <label for="ProductName">ProductName</label>
-            </div>
-            <div>
-                <input type="text" id="ProductName" name="ProductName" required value="<%= data[0]['ProductName'] %>">
-            </div>
+            <label for="ProductName">ProductName</label>
         </div>
         <div>
-            <div>
-                <label for="Unit">Unit</label>
-            </div>
-            <div>
-                <input type="text" id="Unit" name="Unit" required value="<%= data[0]['Unit'] %>">
-            </div>
+            <input type="text" id="ProductName" name="ProductName" required value="">
+            <input type="text" id="ProductID" name="ProductID" value="">
+        </div>
+    </div>
+    <div>
+        <div>
+            <label for="Unit">Unit</label>
         </div>
         <div>
-            <div>
-                <label for="Price">Price</label>
-            </div>
-            <div>
-                <input type="text" id="Price" name="Price" required value="<%= data[0]['Price'] %>">
-            </div>
+            <input type="text" id="Unit" name="Unit" required value="">
+        </div>
+    </div>
+    <div>
+        <div>
+            <label for="Price">Price</label>
         </div>
         <div>
-            <label for="selectCategory">Category:</label><br>
-            <select name="selectCategory" id="selectCategory">
-                <option value="select">--Select--</option>
-                <% for(var i = 0;i < categorylist.length ; i++){ %>
-                <option value="<%= categorylist[i]['name'] %>"><%= categorylist[i]['name'] %></option>
-                <% } %>
-            </select>
+            <input type="text" id="Price" name="Price" required value="">
         </div>
-        <div class="error"><p></p></div>
-        <button class="validate" type="button">Validate</button>
-        <button class="submit" type="submit">Confirm Edit</button>
-        <a href="/products"><button type="button">Cancel</button></a>
-    </form>
+    </div>
+    <label for="selectCategory">Category:</label><br>
+    <select name="selectCategory" id="selectCategory">
+        <option value="select">--Select--</option>
+        <div class='categorydropdown'>
+
+        </div>
+    </select>
+    <div class="error">
+        <p></p>
+    </div>
+    <button class="submit" type="button">Confirm Edit</button>
+    <a href="/products"><button type="button">Cancel</button></a>
+</form>
 
 <script type="text/javascript">
-    $('.submit').hide();
-    $('.validate').click('button',function(){
-        var price = $("input[name = Price]").val();
-        if ( price%1 !== 0){
-            $('.error p').text("Please Enter Valid Numbers in Price Field").css("color","red");
-        }
-        else{
-            $('.error p').text("");
-            $('.submit').show();
-            $('.validate').hide();
-        }
-    })
+    alert('at start');
+    $(document).ready(function () {
+        alert('It came here!!!');
+        $.ajax({
+            url: '/products/edit',
+            type: 'GET',
+            //dataType:'json',
+            success: function (result) {
+                console.log(result.msg);
+                alert('Entering into success function!!');
+                if (result.msg === 'success') {
+                    alert('success');
+                    //top.location.href='/products/edit';
+                    $("input[name='ProductName']").val(result.data[0]['ProductName']);
+                    $("input[name='ProductID']").val(result.data[0]['ProductID']);
+                    $("input[name='Unit']").val(result.data[0]['Unit']);
+                    $("input[name='Price']").val(result.data[0]['Price']);
+                    $("input[name='ProductID']").hide();
+                }
+                else {
+                    alert('Not success!');
+                }
+            },
+            error: function (err) {
+                alert(typeof (err));
+                console.log(err);
+            }
+        });
+        $('.submit').click(function () {
+            var productname = $("input[name='ProductName']").val();
+            var productid = $("input[name='ProductID']").val();
+            var unit = $("input[name='Unit']").val();
+            var price = $("input[name='Price']").val();
+            var selectedcategory = $("select[name='selectCategory']").val();
+            $.ajax({
+                url: '/products/edit',
+                type: 'POST',
+                data: {
+                    ProductName: productname,
+                    ProductID: productid,
+                    Unit: unit,
+                    Price: price,
+                    selectedCategory: selectedcategory
+                },
+                success: function (result) {
+                    if (result.msg == 'success') {
+                        location.href = '/products';
+                    }
+                }
+            });
+        });
+    });
 </script>
-</body>
-</html>
