@@ -1,70 +1,93 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <title>Add</title>
-</head>
-<body>
-    <h2>Enter the Deatils for the New Product</h2>
-    <form action="/products/add" method="post">
+<h2>Enter the Deatils for the New Product</h2>
+<form action="/products/add" method="post">
+    <div>
         <div>
-            <div>
-                <label for="ProductName">ProductName</label>
-            </div>
-            <div>
-                <input type="text" id="ProductName" name="ProductName" required>
-            </div>
+            <label for="ProductName">ProductName</label>
         </div>
         <div>
-            <div>
-                <label for="Unit">Unit</label>
-            </div>
-            <div>
-                <input type="text" id="Unit" name="Unit" required>
-            </div>
+            <input type="text" id="ProductName" name="ProductName" required>
+        </div>
+    </div>
+    <div>
+        <div>
+            <label for="Unit">Unit</label>
         </div>
         <div>
-            <div>
-                <label for="Price">Price</label>
-            </div>
-            <div>
-                <input type="text" id="Price" name="Price" required>
-            </div>
+            <input type="text" id="Unit" name="Unit" required>
+        </div>
+    </div>
+    <div>
+        <div>
+            <label for="Price">Price</label>
         </div>
         <div>
-           <label for="selectedCategory">Choose a category:</label><br>
-            <select name="selectedCategory" id="selectedCategory">
-                <option value="select a category">--Select--</option>
-                <% for(var i = 0; i < categorylist.length ; i++){ %>
-                <option value="<%= categorylist[i]['name'] %>"><%= categorylist[i]['name'] %></option>
-                <% } %>
-            </select>
+            <input type="text" id="Price" name="Price" required>
         </div>
-        <div class="error"><p></p></div>
-        <button class="validate" type="button">Validate</button>
-        <button class="submit" type="submit">Add to Table</button>
-        <a href="/products"><button type="button">Cancel</button></a>
-    </form>
+    </div>
+    <div>
+        <label for="selectedCategory">Choose a category:</label><br>
+        <select name="selectedCategory" id="selectedCategory">
+            <option value="select a category">--Select--</option>
+            
+        </select>
+    </div>
+    <div class="error">
+        <p></p>
+    </div>
+    <button class="validate" type="button">Validate</button>
+    <button class="submit" type="button">Add to Table</button>
+    <a href="/products"><button type="button">Cancel</button></a>
+</form>
 
-    <script type="text/javascript">
-        $('.submit').hide();
-        $('.validate').click('button',function(){
-            var price = $("input[name = Price]").val();
-            if ( price%1 !== 0){
-                $('.error p').text("Please Enter Valid Numbers in Price Field").css("color","red");
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            url:'/products/addproduct',
+            type:'GET',
+            dataType:'json',
+            success:function(result){
+                if(result.msg === 'success'){
+                    $.each(result.categorylist,function(key,value){
+                        $('#selectedCategory').append('<option value="'+value.name+'">'+value.name+'</option>');
+                    });
+                }
+                else{
+                    alert('Not recieved success message from server!!!');
+                }
             }
-            else{
+        });
+        $('.submit').hide();
+        $('.validate').click('button', function () {
+            var price = $("input[name = Price]").val();
+            if (price % 1 !== 0) {
+                $('.error p').text("Please Enter Valid Numbers in Price Field").css("color", "red");
+            }
+            else {
                 $('.error p').text("");
                 $('.submit').show();
                 $('.validate').hide();
+                $('.submit').click(function(){
+                    var productname = $("input[name='ProductName']").val();
+                    var unit = $("input[name='Unit']").val();
+                    var price = $("input[name='Price']").val();
+                    var selectedcategory = $("#selectedCategory option:selected").val();
+                    $.ajax({
+                        url:'/products/addproduct',
+                        type:'POST',
+                        data:{
+                            ProductName: productname,
+                            Unit: unit,
+                            Price: price,
+                            selectedCategory:selectedcategory
+                        },
+                        success:function(result){
+                            if(result.msg === 'success'){
+                                location.href = '/products'
+                            }
+                        }
+                    });
+                });
             }
-        })
-    </script>
-</body>
-</html>
+        });
+    });
+</script>

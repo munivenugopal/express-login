@@ -6,7 +6,7 @@
         </div>
         <div>
             <input type="text" id="ProductName" name="ProductName" required value="">
-            <input type="text" id="ProductID" name="ProductID" value="">
+            <input type="text" id="ProductID" name="ProductID" value="<%= id %>">
         </div>
     </div>
     <div>
@@ -28,9 +28,6 @@
     <label for="selectCategory">Category:</label><br>
     <select name="selectCategory" id="selectCategory">
         <option value="select">--Select--</option>
-        <div class='categorydropdown'>
-
-        </div>
     </select>
     <div class="error">
         <p></p>
@@ -40,24 +37,26 @@
 </form>
 
 <script type="text/javascript">
-    alert('at start');
     $(document).ready(function () {
-        alert('It came here!!!');
+        var id = $("input[name='ProductID']").val();
         $.ajax({
-            url: '/products/edit',
-            type: 'GET',
-            //dataType:'json',
+            url: '/products/editproductgetid',
+            type: 'POST',
+            data:{
+                id:id
+            },
+            dataType:'json',
             success: function (result) {
-                console.log(result.msg);
-                alert('Entering into success function!!');
                 if (result.msg === 'success') {
-                    alert('success');
-                    //top.location.href='/products/edit';
                     $("input[name='ProductName']").val(result.data[0]['ProductName']);
                     $("input[name='ProductID']").val(result.data[0]['ProductID']);
                     $("input[name='Unit']").val(result.data[0]['Unit']);
                     $("input[name='Price']").val(result.data[0]['Price']);
                     $("input[name='ProductID']").hide();
+                    $.each(result.categorylist,function(key,value){
+                        $('#selectCategory').append('<option value="'+value.name+'">'+value.name+'</option>');
+                        console.log(value.name);
+                    });
                 }
                 else {
                     alert('Not success!');
@@ -73,9 +72,10 @@
             var productid = $("input[name='ProductID']").val();
             var unit = $("input[name='Unit']").val();
             var price = $("input[name='Price']").val();
-            var selectedcategory = $("select[name='selectCategory']").val();
+            var selectedcategory = $("#selectCategory option:selected").val();
+            //alert(selectedcategory);
             $.ajax({
-                url: '/products/edit',
+                url: '/products/editproduct',
                 type: 'POST',
                 data: {
                     ProductName: productname,
