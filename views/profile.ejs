@@ -1,0 +1,300 @@
+<div class="profile">
+    <h3>Profile</h3>
+
+</div>
+<button type="button" id="edit-button" class="edit">Edit Profile</button>
+<button type="button" id="add-button" class="edit">Add Profile</button>
+<div class="container">
+    <div class="basic">
+        <h3>Basic Details</h3>
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" name="name" value="" disabled>
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="text" name="email" value="" disabled>
+        </div>
+        <div>
+            <label for="phone">Phone:</label>
+            <input type="text" name='phone' value="">
+        </div>
+        <button class="address-button" type="button">Next</button>
+    </div>
+
+    <div class="address">
+        <h3>Address</h3>
+        <div>
+            <label for="state">State:</label>
+            <input type="text" name="state" value="">
+        </div>
+        <div>
+            <label for="city">City:</label>
+            <input type="text" name="city" value="">
+        </div>
+        <div>
+            <label for="address">Address:</label>
+            <input type="text" name="address" value="">
+        </div>
+        <button class="basic-button" type="button">Previous</button>
+        <button class="proffessional-button" type="button">Next</button>
+    </div>
+
+    <div class="proffessional">
+        <h3>Proffessional</h3>
+        <div>
+            <label for="company">Company:</label>
+            <input type="text" name="company" value="">
+        </div>
+        <div>
+            <label for="role">Role:</label>
+            <input type="text" name="role" value="">
+        </div>
+        <div>
+            <label for="salary">Salary:</label>
+            <input type="text" name="salary" value="">
+        </div>
+        <button class="address-button" type="button">Previous</button>
+        <button class="social-button" type="button">Next</button>
+    </div>
+
+    <div class="social">
+        <h3>Social</h3>
+        <div>
+            <label for="meta">Meta:</label>
+            <input type="text" name="meta" value="">
+        </div>
+        <div>
+            <label for="twitter">Twitter</label>
+            <input type="text" name="twitter" value="">
+        </div>
+        <div>
+            <label for="linkedin">Linkedin:</label>
+            <input type="text" name="linkedin" value="">
+        </div>
+        <button class="proffessional-button" type="button">Previous</button>
+        <button class="personal-button" type="button">Next</button>
+    </div>
+
+    <div class="personal">
+        <h3>Hobbies</h3>
+        <div>
+            <label for="hobby1">Hobby 1:</label>
+            <input type="text" name="hobby1" value="">
+        </div>
+        <div>
+            <label for="hobby2">Hobby 2:</label>
+            <input type="text" name="hobby2" value="">
+        </div>
+        <div>
+            <label for="hobby3">Hobby 3:</label>
+            <input type="text" name="hobby3" value="">
+        </div>
+        <button class="social-button" type="button">Previous</button>
+        <button class="submit" type="button">Submit</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#add-button').hide();
+        $('.container').hide();
+        $.ajax({
+            url:'/userprofile/getprofile',
+            type:'GET',
+            dataType:'json',
+            success:function(result){
+                if(result.msg === 'success'){
+                    console.log(result);
+                    var percentage = 0;
+                    if(result.profileData[0]['name']){
+                        percentage = percentage + 7;
+                    }
+                    if(result.profileData[0]['email']){
+                        percentage = percentage + 7;
+                    }
+                    if(result.profileData[0]['phone']){
+                        percentage = percentage + 7;
+                    }
+                    if(result.profileData[0]['state']){
+                        percentage = percentage + 7;
+                    }
+                    if(result.profileData[0]['city']){
+                        percentage = percentage + 7;
+                    }
+                    if(result.profileData[0]['address']){
+                        percentage = percentage + 7;
+                    }
+                    if(result.profileData[0]['company']){
+                        percentage = percentage + 7;
+                    }
+                    if(result.profileData[0]['role']){
+                        percentage = percentage + 7;
+                    }
+                    if(result.profileData[0]['salary']){
+                        percentage = percentage + 7;
+                    }
+                    if(result.profileData[0]['meta']){
+                        percentage = percentage + 7;
+                    }
+                    if(result.profileData[0]['twitter']){
+                        percentage = percentage + 7;
+                    }
+                    if(result.profileData[0]['linkedin']){
+                        percentage = percentage + 7;
+                    }
+                    if(result.profileData[0]['hobby1']){
+                        percentage = percentage + 7;
+                    }
+                    if(result.profileData[0]['hobby2']){
+                        percentage = percentage + 7;
+                    }
+                    if(result.profileData[0]['hobby3']){
+                        percentage = percentage + 2;
+                    }
+                    $('.profile').append(`<h3>Status</h3><div><progress style="float:left" id='progress' value=`+percentage+`  max='100'></progress><p>&ensp;`+percentage+`%</p></div>`);
+                    $('.profile').append(`
+                                        <ul>
+                                            <li><b>Name</b>     &emsp;&emsp;&emsp;&emsp;       :`+result.profileData[0]['name']+`</li>
+                                            <li><b>Email</b>    &emsp;&emsp;&emsp;&emsp;        :`+result.profileData[0]['email']+`</li>
+                                            <li><b>Phone</b>     &emsp;&emsp;&emsp;&emsp;       :`+result.profileData[0]['phone']+`</li>
+                                            <li><b>State</b>     &emsp;  &emsp;&emsp;&emsp;     :`+result.profileData[0]['state']+`</li>
+                                            <li><b>City</b>   &ensp;  &emsp;&emsp;&emsp; &emsp;       :`+result.profileData[0]['city']+`</li>
+                                            <li><b>address</b>      &emsp;&emsp;  &emsp;  :`+result.profileData[0]['address']+`</li>
+                                            <li><b>Company</b>   &ensp;    &emsp;&emsp;   :`+result.profileData[0]['company']+`</li>
+                                            <li><b>Role</b>     &ensp;     &emsp;  &emsp;&emsp;&emsp; :`+result.profileData[0]['role']+`</li>
+                                            <li><b>Salary</b>    &ensp;  &emsp;    &emsp;&emsp; :`+result.profileData[0]['salary']+`</li>
+                                            <li><b>Meta-Profile link</b>:`+result.profileData[0]['meta']+`</li>
+                                            <li><b>Twitter-Profile</b> &ensp; :`+result.profileData[0]['twitter']+`</li>
+                                            <li><b>Linked-in Profile</b>:`+result.profileData[0]['linkedin']+`</li>
+                                            <li><b>Hobby -1</b> &emsp;&emsp;&emsp;        :`+result.profileData[0]['hobby1']+`</li>
+                                            <li><b>Hobby -2</b> &emsp;&emsp;&emsp;        :`+result.profileData[0]['hobby2']+`</li>
+                                            <li><b>Hobby -3</b>    &emsp;&emsp;&emsp;     :`+result.profileData[0]['hobby3']+`</li>
+                                        </ul>
+                    `);
+                }
+                else{
+                    $('#add-button').show();
+                    $('#edit-button').hide();
+                    alert('Looks like There is nothing about this user in the database...Please click the add button to add details ');
+                }
+            }
+        });
+        
+        $('.edit').click(function () {
+            $('.profile').hide();
+            $('.container').show();
+            $.ajax({
+                url: '/userprofile/getsessmail',
+                type: 'GET',
+                dataType: 'JSON',
+                success: function (result) {
+                    if (result.msg === 'success') {
+                        $("input[name='name']").val(result.basicData[0]['name']);
+                        $("input[name='email']").val(result.basicData[0]['email']);
+                        $("input[name='phone']").val(result.basicData[0]['phone']);
+                        $("input[name='state']").val(result.basicData[0]['state']);
+                        $("input[name='city']").val(result.basicData[0]['city']);
+                        $("input[name='address']").val(result.basicData[0]['address']);
+                        $("input[name='company']").val(result.basicData[0]['company']);
+                        $("input[name='role']").val(result.basicData[0]['role']);
+                        $("input[name='salary']").val(result.basicData[0]['salary']);
+                        $("input[name='meta']").val(result.basicData[0]['meta']);
+                        $("input[name='twitter']").val(result.basicData[0]['twitter']);
+                        $("input[name='linkedin']").val(result.basicData[0]['linkedin']);
+                        $("input[name='hobby1']").val(result.basicData[0]['hobby1']);
+                        $("input[name='hobby2']").val(result.basicData[0]['hobby2']);
+                        $("input[name='hobby3']").val(result.basicData[0]['hobby3']);
+                    }
+                    else {
+                        alert('Failed to load data from server!!!');
+                    }
+                }
+            });
+            $('.address').hide();
+            $('.proffessional').hide();
+            $('.social').hide();
+            $('.personal').hide();
+            $('.address-button').click(function () {
+                $('.basic').hide();
+                $('.address').show();
+                $('.proffessional').hide();
+                $('.social').hide();
+                $('.personal').hide();
+            });
+            $('.basic-button').click(function () {
+                $('.basic').show();
+                $('.address').hide();
+                $('.proffessional').hide();
+                $('.social').hide();
+                $('.personal').hide();
+            });
+            $('.proffessional-button').click(function () {
+                $('.basic').hide();
+                $('.address').hide();
+                $('.proffessional').show();
+                $('.social').hide();
+                $('.personal').hide();
+            });
+            $('.social-button').click(function () {
+                $('.basic').hide();
+                $('.address').hide();
+                $('.proffessional').hide();
+                $('.social').show();
+                $('.personal').hide();
+            });
+            $('.personal-button').click(function () {
+                $('.basic').hide();
+                $('.address').hide();
+                $('.proffessional').hide();
+                $('.social').hide();
+                $('.personal').show();
+            });
+            $('.submit').click(function () {
+                var phone = $("input[name='phone']").val();
+                var state = $("input[name='state']").val();
+                var city = $("input[name='city']").val();
+                var address = $("input[name='address']").val();
+                var company = $("input[name='company']").val();
+                var role = $("input[name='role']").val();
+                var salary = $("input[name='salary']").val();
+                var meta = $("input[name='meta']").val();
+                var twitter = $("input[name='twitter']").val();
+                var linkedin = $("input[name='linkedin']").val();
+                var hobby1 = $("input[name='hobby1']").val();
+                var hobby2 = $("input[name='hobby2']").val();
+                var hobby3 = $("input[name='hobby3']").val();
+                //ajax post request to server to update data
+                $.ajax({
+                    url: '/userprofile/getprofiledata',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        phone: phone,
+                        state: state,
+                        city: city,
+                        address: address,
+                        company: company,
+                        role: role,
+                        salary: salary,
+                        meta: meta,
+                        twitter: twitter,
+                        linkedin: linkedin,
+                        hobby1: hobby1,
+                        hobby2: hobby2,
+                        hobby3: hobby3
+                    },
+                    success: function (result) {
+                        if (result.msg === 'success') {
+                            alert('Profile Updated Successfully!!!');
+                            location.href = '/userprofile'
+                        }
+                        else{
+                            alert('Data has not been successfully added to database!!!');
+                        }
+                    }
+                });
+            });
+        });
+    });
+</script>
